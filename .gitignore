@@ -1,0 +1,6 @@
+venv/
+*.xml
+*.iml
+.vscode/
+.idea/
+*.xlsx
