@@ -12,7 +12,8 @@ class Student:
             self.partners = list(map(lambda p: p.strip(), self.partners))
         else:
             self.partners = []
+        self.hasgroup = False
 
     def __str__(self):
-        return 'Student{email: %s, name: %s, prog: %s, worktime: %s, partners: %s}' % (
-            self.email, self.name, self.prog, self.worktime, self.partners)
+        return 'Student{email: %s, name: %s, prog: %s, worktime: %s, hasgroup: %s, partners: %s}' % (
+            self.email, self.name, self.prog, self.worktime, self.hasgroup, self.partners)

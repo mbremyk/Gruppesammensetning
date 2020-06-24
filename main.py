@@ -26,10 +26,22 @@ if __name__ == '__main__':
     allstudents = Group()
     for s in students:
         allstudents.addmember(s)
+        s.hasgroup = False
 
     for s in students:
         partners = []
         for p in s.partners:
             partners.append(allstudents.getmemberbyname(p))
         s.partners = partners
-        print(s)
+
+    for s in students:
+        if not s.hasgroup:
+            for g in groups:
+                if len(g.members) < max_members - len(s.partners):
+                    g.addmember(s)
+                    for p in s.partners:
+                        g.addmember(p)
+                    break
+
+    for g in groups:
+        print(g)

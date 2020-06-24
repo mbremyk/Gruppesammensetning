@@ -12,13 +12,14 @@ class Group:
         if member in self.members:
             raise ValueError('Member already in group')
         self.members.append(member)
+        member.hasgroup = True
         if member.prog:
             self.prog = True
 
     def __str__(self):
         s = 'Group{'
         for m in self.members:
-            s += m.name + ','
+            s += m.name + ', '
         s += 'hasprogrammer: %s' % self.prog
         s += '}'
         return s
