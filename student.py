@@ -18,3 +18,6 @@ class Student:
     def __str__(self):
         return 'Student{email: %s, name: %s, prog: %s, worktime: %s, hasgroup: %s, partners: %s}' % (
             self.email, self.name, self.prog, self.worktime, self.hasgroup, self.partners)
+
+    def removepartner(self, partner):
+        self.partners.remove(partner)

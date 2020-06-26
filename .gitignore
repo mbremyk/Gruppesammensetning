@@ -3,3 +3,8 @@
 .vscode/
 *.iml
 *.xml
+build/
+dist/
+*.spec
+*.exe
+venv/
