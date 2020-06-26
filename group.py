@@ -2,9 +2,11 @@ from student import Student
 
 
 class Group:
-    def __init__(self):
+    def __init__(self, maxmembers: int):
         self.members = []
         self.prog = False
+        self.time = ''
+        self.maxmembers = maxmembers
 
     def getmemberbyname(self, name):
         for m in self.members:
@@ -12,17 +14,31 @@ class Group:
                 return m
 
     def addmember(self, member):
-        if member in self.members:
+        if self.hasmember(member):
             raise ValueError('Member already in group')
         self.members.append(member)
         member.hasgroup = True
+        for p in member.partners:
+            if len(self) < self.maxmembers and not p.hasgroup:
+                try:
+                    self.addmember(p)
+                except ValueError as error:
+                    print(error)
+                    continue
+                except Exception as error:
+                    print(error)
+                    break
+        for m in self.members:
+            if m in member.partners:
+                member.partners.remove(m)
         if member.prog:
             self.prog = True
+        if not self.time:
+            if 'tid' in member.worktime:
+                self.time = member.worktime
 
     def hasmember(self, member):
-        if member in self.members:
-            return True
-        return False
+        return member in self.members
 
     def __str__(self):
         s = 'Group{'
@@ -49,3 +65,18 @@ class Group:
         else:
             raise TypeError('Cannot add non-Group or -Student object to object of type Group')
         return self
+
+    def __bool__(self):
+        return bool(self.members)
+
+    __nonzero__ = __bool__
+
+    def removemember(self, member):
+        if member in self.members:
+            self.members.remove(member)
+            if not any(s.hasprog for s in self.members):
+                self.prog = False
+            if not any('tid' in s.worktime for s in self.members):
+                self.time = ''
+        else:
+            raise ValueError('Student not member of group')
