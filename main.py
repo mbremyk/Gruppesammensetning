@@ -1,16 +1,26 @@
+from tkinter import *
 from tkinter import filedialog
 import openpyxl as opxl
 from student import Student
 from group import Group
 from groupregister import GroupRegister
 
+pad = 10
+defaultmaxmembers = 5
 
-if __name__ == '__main__':
-    maxmembers = int(input('Maximum amount of members in each group: '))
-    groupregister = GroupRegister(maxmembers)
 
-    filename = filedialog.askopenfilename()
-    wb = opxl.load_workbook(filename)
+def handleselectfile():
+    filename.set(filedialog.askopenfilename(filetypes=(('Excel spreadsheet', '*.xlsx'), ('All files', '*.*'))))
+    if filename.get():
+        btncreategroups['state'] = 'normal'
+    else:
+        btncreategroups['state'] = 'disabled'
+
+
+def handlecreategroups():
+    global groupregister
+    groupregister = GroupRegister(maxmembers.get())
+    wb = opxl.load_workbook(filename.get())
     ws = wb.active
     students = []
     for row in ws.iter_rows(2):
@@ -21,6 +31,56 @@ if __name__ == '__main__':
 
     groupregister += students
     groupregister.creategroups()
+    for s in students:
+        print(s)
+
+    for g in groupregister.groups:
+        print(g)
+
+
+def createapp():
+    app = Tk()
+    app.title('Gruppesammensetning')
+    app.geometry('900x600')
+    frame = Frame(app)
+    global filename
+    filename = StringVar()
+    global maxmembers
+    maxmembers = IntVar()
+    maxmembers.set(defaultmaxmembers)
+
+    lblfile = Label(frame, text='Fil: ')
+    lblfilename = Label(frame, textvariable=filename)
+    btnselectfile = Button(frame, text='Velg fil', command=handleselectfile)
+
+    spinmaxmembers = Spinbox(frame, from_=2, to=10, textvariable=maxmembers)
+    lblmaxmembers = Label(frame, text='Maks medlemmer per gruppe')
+
+    global btncreategroups
+    btncreategroups = Button(frame, text='Opprett grupper', command=handlecreategroups, state='disabled')
+
+    lblfile.grid(column=0, row=0, sticky='nw')
+    lblfilename.grid(column=1, row=0, sticky='nw')
+    btnselectfile.grid(column=2, row=0, sticky='nw')
+
+    lblmaxmembers.grid(column=0, row=1, sticky='nw')
+    spinmaxmembers.grid(column=1, row=1, sticky='nw')
+
+    btncreategroups.grid(column=0, row=2, sticky='nw')
+
+    frame.grid_columnconfigure(0, weight=0)
+    frame.grid_columnconfigure(1, weight=2)
+    frame.grid_columnconfigure(2, weight=0)
+    frame.grid(column=0, row=0, sticky='nsew', padx=pad, pady=pad)
+    app.grid_columnconfigure(0, weight=1)
+    app.grid_rowconfigure(0, weight=1)
+
+    return app
+
+
+if __name__ == '__main__':
+    app = createapp()
+    app.mainloop()
 
     # for s in students:
     #     if not s.hasgroup:
@@ -38,11 +98,3 @@ if __name__ == '__main__':
     #                         g.addmember(p)
     #                         s.partnersStr.remove(p)
     #                 break
-
-    for s in students:
-        print(s)
-
-    for g in groupregister.groups:
-        print(g)
-
-    input()

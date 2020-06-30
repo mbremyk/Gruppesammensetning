@@ -22,7 +22,8 @@ class GroupRegister:
         elif isinstance(other, list) and all(isinstance(s, Student) for s in other):
             self.students += other
         else:
-            raise TypeError('Cannot add non-GroupRegister, -Group, or -Student type object to object of type GroupRegister')
+            raise TypeError(
+                'Cannot add non-GroupRegister, -Group, or -Student type object to object of type GroupRegister')
         self.__updatepartners()
         return self
 
@@ -38,22 +39,24 @@ class GroupRegister:
                 return s
 
     def creategroups(self):
-        self.groups = []
+        self.groups = [Group(self.maxmembers) for x in range(ceil(len(self.students) / self.maxmembers))]
         partners = [s for s in self.students if len(s.partners)]
-        self.groups += self.__createpartnergroups(partners)
+        self.__createpartnergroups(partners)
         day = [s for s in self.students if s.worktime == 'Dagtid' and not s.hasgroup]
         night = [s for s in self.students if s.worktime == 'Kveldstid' and not s.hasgroup]
         flex = [s for s in self.students if s.worktime == 'Fleksibel' and not s.hasgroup]
-        self.groups += self.__creategroups(day)
-        self.groups += self.__creategroups(night)
-        while len(self.groups) < ceil(len(self.students) / self.maxmembers):
-            self.groups.append(Group(self.maxmembers))
-        self.__fill(flex + [s for s in day if not s.hasgroup] + [s for s in night if not s.hasgroup])
-        # notgrouped = [s for s in day if not s.hasgroup] + [s for s in night if not s.hasgroup] + [s for s in flex if not s.hasgroup]
-        # self.groups += self.__creategroups(notgrouped)
-        for g in self.groups:
-            if len(g) == 0:
-                self.groups.remove(g)
+        self.__fill(day)
+        self.__fill(night)
+        self.__shrinkgroups()
+        while any(not s.hasgroup for s in self.students):
+            notgrouped = [s for s in day if not s.hasgroup] + [s for s in night if not s.hasgroup] + [s for s in flex if
+                                                                                                      not s.hasgroup]
+            self.__fill(notgrouped, False)
+            self.__shrinkgroups()
+        self.__removeemptygroups()
+        self.__updatepartners()
+
+    def __shrinkgroups(self):
         for g1 in self.groups:
             for g2 in self.groups:
                 if g1 is g2:
@@ -61,7 +64,12 @@ class GroupRegister:
                 if len(g1) + len(g2) <= self.maxmembers:
                     g1 += g2
                     self.groups.remove(g2)
-        self.__updatepartners()
+                    self.groups.append(Group(self.maxmembers))
+
+    def __removeemptygroups(self):
+        for g in self.groups:
+            if len(g) == 0:
+                self.groups.remove(g)
 
     def __creategroups(self, students: List[Student]) -> []:
         groups = []
@@ -87,12 +95,15 @@ class GroupRegister:
         return groups
 
     def __createpartnergroups(self, students: List[Student]):
-        groups = []
         for s in students:
             if not s.hasgroup:
-                groups.append(Group(self.maxmembers))
-                self.__addmembertogroup(s, groups[-1])
-        return groups
+                for g in self.groups:
+                    if len(g) == 0:
+                        self.__addmembertogroup(s, g)
+                        break
+                    elif all(len(g) > 0 for g in self.groups) and len(g) < self.maxmembers - len(s.partners):
+                        self.__addmembertogroup(s, g)
+                        break
 
     def __addmembertogroup(self, student: Student, group: Group) -> None:
         if len(group) >= self.maxmembers:
@@ -116,22 +127,20 @@ class GroupRegister:
                 if partner and partner not in s.partners:
                     s.partners.append(self.__getstudentbyname(p))
 
-    def __fill(self, students: List[Student]):
+    def __fill(self, students: List[Student], checktime=True):
         for g in self.groups:
             if len(g) < self.maxmembers:
                 if not g.prog:
                     for s in students:
-                        if s.prog and not s.hasgroup:
+                        if s.prog and not s.hasgroup and (
+                                g.time == s.worktime or s.worktime == 'Fleksibel' or g.time == ''):
                             self.__addmembertogroup(s, g)
-                else:
-                    for s in students:
-                        if len(g) < self.maxmembers - len(s.partners) and not s.hasgroup:
-                            self.__addmembertogroup(s, g)
-                        else:
                             break
-                for s in students:
-                    if len(g) < self.maxmembers and not s.hasgroup:
-                        self.__addmembertogroup(s, g)
+        for g in self.groups:
+            for s in students:
+                if len(g) < self.maxmembers - len(s.partners) and not s.hasgroup and (not checktime or
+                                                                                      g.time == s.worktime or s.worktime == 'Fleksibel' or g.time == ''):
+                    self.__addmembertogroup(s, g)
 
     def __movestudent(self, student: Student, togroup: Group):
         if len(togroup) >= self.maxmembers:

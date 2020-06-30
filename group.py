@@ -44,7 +44,8 @@ class Group:
         s = 'Group{'
         for m in self.members:
             s += m.name + ', '
-        s += 'hasprogrammer: %s' % self.prog
+        s += 'hasprogrammer: %s, ' % self.prog
+        s += 'worktime: %s' % self.time
         s += '}'
         return s
 
@@ -54,6 +55,8 @@ class Group:
     def __iadd__(self, other):
         if isinstance(other, Group):
             self.members += other.members
+            if not self.time and other.time:
+                self.time = other.time
             for m in other.members:
                 if m.prog:
                     self.prog = True
