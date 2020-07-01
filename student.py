@@ -5,6 +5,7 @@ class Student:
     def __init__(self, email, name, prog, worktime, strpartners):
         self.email = email
         self.name = name
+        self.strprog = prog
         self.prog = 'JavaScript' in prog or 'språk' in prog
         self.worktime = worktime
         if strpartners:
@@ -21,3 +22,6 @@ class Student:
 
     def removepartner(self, partner):
         self.partners.remove(partner)
+
+    def gettuple(self):
+        return self.name, self.email, self.strprog, self.worktime, self.strpartners

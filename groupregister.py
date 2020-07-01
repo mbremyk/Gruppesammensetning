@@ -38,8 +38,13 @@ class GroupRegister:
             if s.name == name:
                 return s
 
-    def creategroups(self):
-        self.groups = [Group(self.maxmembers) for x in range(ceil(len(self.students) / self.maxmembers))]
+    def creategroups(self, resetgroups=False):
+        if resetgroups:
+            self.groups = [Group(self.maxmembers) for x in range(ceil(len(self.students) / self.maxmembers))]
+            self.__setallhasgroup(False)
+        else:
+            while len(self.groups) < ceil(len(self.students) / self.maxmembers):
+                self.groups.append(Group(self.maxmembers))
         partners = [s for s in self.students if len(s.partners)]
         self.__createpartnergroups(partners)
         day = [s for s in self.students if s.worktime == 'Dagtid' and not s.hasgroup]
@@ -149,3 +154,7 @@ class GroupRegister:
             if student in g.members:
                 g.removemember(student)
                 self.__addmembertogroup(student, togroup)
+
+    def __setallhasgroup(self, hasgroup):
+        for s in self.students:
+            s.hasgroup = hasgroup

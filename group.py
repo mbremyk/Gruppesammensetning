@@ -83,3 +83,9 @@ class Group:
                 self.time = ''
         else:
             raise ValueError('Student not member of group')
+
+    def membertuples(self):
+        tuples = []
+        for m in self.members:
+            tuples.append(m.gettuple())
+        return tuples
