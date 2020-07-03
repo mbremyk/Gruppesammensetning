@@ -21,18 +21,21 @@ def handleselectfile():
         global headers
         headers = [c.value[:27] for c in ws[1][3:]]
         headers[0], headers[1] = headers[1], headers[0]
-        students = []
         for row in ws.iter_rows(2):
             vals = []
             for cell in row:
                 vals.append(cell.value)
-            students.append(Student(vals[3], vals[4], vals[5], vals[6], vals[7]))
+            # vals[3:7] == [email, name, programming experience, preferred worktime, string of desired partners]
+            student = Student(vals[3], vals[4], vals[5], vals[6], vals[7])
+            if not groupregister.getstudentbyname(vals[4]):
+                groupregister += student
+            else:
+                groupregister.updatestudent(vals[4], student)
 
-        groupregister += students
         numstudents.set(len(groupregister.students))
 
         lststudents.delete(0, END)
-        for s in students:
+        for s in groupregister.students:
             lststudents.insert(END, s.name)
         btncreategroups['state'] = 'normal'
     else:

@@ -16,7 +16,7 @@ class GroupRegister:
         elif isinstance(other, Group):
             self.groups += other
         elif isinstance(other, Student):
-            self.students += other
+            self.addstudent(other)
         elif isinstance(other, list) and all(isinstance(g, Group) for g in other):
             self.groups += other
         elif isinstance(other, list) and all(isinstance(s, Student) for s in other):
@@ -33,7 +33,7 @@ class GroupRegister:
         self.students.append(student)
         self.__updatepartners()
 
-    def __getstudentbyname(self, name: str):
+    def getstudentbyname(self, name: str):
         for s in self.students:
             if s.name == name:
                 return s
@@ -60,6 +60,11 @@ class GroupRegister:
             self.__shrinkgroups()
         self.__removeemptygroups()
         self.__updatepartners()
+
+    def updatestudent(self, name, student):
+        self.students[self.students.index(self.getstudentbyname(name))].update(student)
+        self.__updatepartners()
+        pass
 
     def __shrinkgroups(self):
         for g1 in self.groups:
@@ -120,7 +125,7 @@ class GroupRegister:
     def __updatestrpartners(self):
         for s in self.students:
             for p in s.strpartners:
-                partner = self.__getstudentbyname(p)
+                partner = self.getstudentbyname(p)
                 if partner and s.name not in partner.strpartners:
                     partner.strpartners.append(s.name)
 
@@ -128,9 +133,9 @@ class GroupRegister:
         self.__updatestrpartners()
         for s in self.students:
             for p in s.strpartners:
-                partner = self.__getstudentbyname(p)
+                partner = self.getstudentbyname(p)
                 if partner and partner not in s.partners:
-                    s.partners.append(self.__getstudentbyname(p))
+                    s.partners.append(self.getstudentbyname(p))
 
     def __fill(self, students: List[Student], checktime=True):
         for g in self.groups:

@@ -25,3 +25,15 @@ class Student:
 
     def gettuple(self):
         return self.name, self.email, self.strprog, self.worktime, self.strpartners
+
+    def update(self, student):
+        if not isinstance(student, Student):
+            raise TypeError('Tried to update object of type Student with object not of type Student')
+        self.email = student.email
+        self.name = student.name
+        self.strprog = student.strprog
+        self.prog = student.prog
+        self.worktime = student.worktime
+        self.strpartners = student.strpartners
+        self.hasgroup = student.hasgroup
+        self.partners = student.partners
