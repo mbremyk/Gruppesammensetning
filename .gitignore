@@ -8,3 +8,5 @@ dist/
 *.spec
 *.exe
 venv/
+*.pyc
+__pycache__/
