@@ -31,6 +31,7 @@ def handleselectfile():
         groupregister += students
         numstudents.set(len(groupregister.students))
 
+        lststudents.delete(0, END)
         for s in students:
             lststudents.insert(END, s.name)
         btncreategroups['state'] = 'normal'
