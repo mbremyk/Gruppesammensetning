@@ -47,32 +47,12 @@ def handleselectfile():
 def handlecreategroups():
     groupregister.maxmembers = maxmembers.get()
     groupregister.creategroups(True)
-
-    groupframe = Frame(frame)
-    groupframe.grid(column=1, row=10, columnspan=2, sticky='nsew')
-    canvas = Canvas(groupframe)
     grouplists = []
 
-    groupscroll = Scrollbar(groupframe, orient='vertical', command=canvas.yview)
-
-    grouplistframe = Frame(canvas)
-    grouplistframe.bind(
-        "<Configure>",
-        lambda e: canvas.configure(
-            scrollregion=canvas.bbox("all")
-        )
-    )
-
-    canvas.create_window((0, 0), window=grouplistframe, anchor="nw")
-    canvas.configure(yscrollcommand=groupscroll.set)
-
-    canvas.pack(side=LEFT, fill=BOTH, expand=1)
-    groupscroll.pack(side=RIGHT, fill=Y)
-
     for ix, g in enumerate(groupregister.groups):
-        grouplists.append(MultiColumnTreeView(grouplistframe, headers, g.membertuples(), 'Gruppe %s' % ix))
+        grouplists.append(MultiColumnTreeView(grouplistframe, headers, g.membertuples(), 'Gruppe %s' % (ix + 1)))
     for gl in grouplists:
-        gl.pack(fill=X)
+        gl.pack(fill=X, expand=True)
 
     for s in groupregister.students:
         print(s)
@@ -81,11 +61,23 @@ def handlecreategroups():
         print(g)
 
 
+def handlelistchange(evt):
+    lst = evt.widget
+    index = lst.curselection()[0]
+    student = groupregister.getstudentbyname(lst.get(index)).gettuple()
+    student = list(student)
+    student[-1] = groupregister.getgroupindexbystudentname(student[0]) + 1
+    student[2] = student[2].replace(';', '\n').strip('\n')
+    for ix, s in enumerate(studentvariables):
+        s.set(student[ix])
+    pass
+
+
 def createapp():
     global app
     app = Tk()
     app.title('Gruppesammensetning')
-    app.geometry('1100x700')
+    app.geometry('1200x700')
     global frame
     frame = Frame(app)
     global filename
@@ -114,7 +106,39 @@ def createapp():
     lststudentsframe = Frame(frame)
     global lststudents
     lststudents = Listbox(lststudentsframe)
+    lststudents.bind('<<ListboxSelect>>', handlelistchange)
     lststudentsscroll = Scrollbar(lststudentsframe, orient='vertical')
+
+    groupframe = Frame(frame)
+    canvas = Canvas(groupframe)
+    global grouplistframe
+    grouplistframe = Frame(canvas)
+    groupscroll = Scrollbar(groupframe, orient='vertical', command=canvas.yview)
+
+    grouplistframe.bind(
+        "<Configure>",
+        lambda e: canvas.configure(
+            scrollregion=canvas.bbox("all")
+        )
+    )
+
+    studentinfoframe = Frame(frame)
+    global studentvariables
+    studentvariables = [StringVar(), StringVar(), StringVar(), StringVar(), StringVar()]
+    for s in studentvariables:
+        s.set('')
+    labeltexts = ['Navn: ', 'Email: ', 'Prog. erfaring: ', 'Arbeidstid: ', 'Gruppe: ']
+    labels = []
+    texts = []
+    for ix, l in enumerate(labeltexts):
+        labels.append(Label(studentinfoframe, text=l))
+        texts.append(Label(studentinfoframe, textvariable=studentvariables[ix]))
+
+    for ix, (lbl, txt) in enumerate(zip(labels, texts)):
+        txt.config(width=30)
+        lbl.grid(column=0, row=ix, sticky='nw')
+        txt.grid(column=1, row=ix, sticky='nw')
+    studentinfoframe.grid(column=0, row=11, sticky='nsew')
 
     lblfile.grid(column=0, row=0, sticky='nw')
     lblfilename.grid(column=1, row=0, sticky='nw')
@@ -136,6 +160,14 @@ def createapp():
 
     lststudents.config(yscrollcommand=lststudentsscroll.set)
     lststudentsscroll.config(command=lststudents.yview)
+
+    groupframe.grid(column=1, row=10, columnspan=2, rowspan=2, sticky='nsew')
+
+    canvas.create_window((0, 0), window=grouplistframe, anchor="nw")
+    canvas.configure(yscrollcommand=groupscroll.set)
+
+    canvas.pack(side=LEFT, fill=BOTH, expand=1)
+    groupscroll.pack(side=RIGHT, fill=Y)
 
     app.grid_columnconfigure(0, weight=1)
     app.grid_rowconfigure(0, weight=1)

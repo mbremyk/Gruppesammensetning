@@ -66,6 +66,11 @@ class GroupRegister:
         self.__updatepartners()
         pass
 
+    def getgroupindexbystudentname(self, name):
+        for g in self.groups:
+            if g.hasmember(self.getstudentbyname(name)):
+                return self.groups.index(g)
+
     def __shrinkgroups(self):
         for g1 in self.groups:
             for g2 in self.groups:
