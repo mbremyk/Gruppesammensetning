@@ -120,8 +120,8 @@ class GroupRegister:
                         self.__addmembertogroup(s, g)
                         break
 
-    def __addmembertogroup(self, student: Student, group: Group) -> None:
-        if len(group) >= self.maxmembers:
+    def __addmembertogroup(self, student: Student, group: Group, ignorelimit=False) -> None:
+        if len(group) >= self.maxmembers and not ignorelimit:
             raise Exception('Group is full')
         if student.hasgroup:
             raise ValueError('Student already in a group')
@@ -157,13 +157,14 @@ class GroupRegister:
                                                                                       g.time == s.worktime or s.worktime == 'Fleksibel' or g.time == ''):
                     self.__addmembertogroup(s, g)
 
-    def __movestudent(self, student: Student, togroup: Group):
-        if len(togroup) >= self.maxmembers:
+    def movestudent(self, student: Student, togroup: Group, ignorelimit=False):
+        if len(togroup) >= self.maxmembers and not ignorelimit:
             raise Exception('Cannot move student to full group')
         for g in self.groups:
             if student in g.members:
                 g.removemember(student)
-                self.__addmembertogroup(student, togroup)
+                self.__addmembertogroup(student, togroup, True)
+                break
 
     def __setallhasgroup(self, hasgroup):
         for s in self.students:

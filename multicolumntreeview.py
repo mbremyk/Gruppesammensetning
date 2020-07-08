@@ -4,12 +4,13 @@ from tkinter.ttk import *
 
 
 class MultiColumnTreeView(Frame):
-    def __init__(self, master,  columns, data, text, **kw):
+    def __init__(self, master, columns, data, text, handletreeselect, **kw):
         super().__init__(master, **kw)
         self.master = master
         self.columns = columns
         self.data = data
         self.text = text
+        self.handletreeselect = handletreeselect
         self.label = None
         self.tree = None
         self.__setupwidgets()
@@ -20,8 +21,11 @@ class MultiColumnTreeView(Frame):
         frame.pack(fill=BOTH, expand=1)
         self.label = Label(frame, text=self.text)
         self.label.grid(column=0, row=0, sticky='nw')
-        self.tree = Treeview(frame, columns=self.columns, show='headings')
+        self.tree = Treeview(frame, columns=self.columns, show='headings', selectmode='browse')
         self.tree.grid(column=0, row=1, sticky='nsew')
+
+        self.tree.bind('<<TreeviewSelect>>', handletreeselect)
+
         frame.grid_columnconfigure(0, weight=1)
         frame.grid_rowconfigure(1, weight=1)
 
@@ -41,7 +45,7 @@ class MultiColumnTreeView(Frame):
     def __sortby(self, tree, col, descending):
         """sort tree contents when a column header is clicked on"""
         # grab values to sort
-        data = [(tree.set(child, col), child) \
+        data = [(tree.set(child, col), child)
                 for child in tree.get_children('')]
         # if the data to be sorted is numeric change to float
         # data =  change_numeric(data)
