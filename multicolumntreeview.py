@@ -19,12 +19,12 @@ class MultiColumnTreeView(Frame):
     def __setupwidgets(self):
         frame = Frame(self.master)
         frame.pack(fill=BOTH, expand=1)
+
         self.label = Label(frame, text=self.text)
         self.label.grid(column=0, row=0, sticky='nw')
+
         self.tree = Treeview(frame, columns=self.columns, show='headings', selectmode='browse')
         self.tree.grid(column=0, row=1, sticky='nsew')
-
-        self.tree.bind('<<TreeviewSelect>>', handletreeselect)
 
         frame.grid_columnconfigure(0, weight=1)
         frame.grid_rowconfigure(1, weight=1)

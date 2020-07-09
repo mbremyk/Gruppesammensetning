@@ -7,9 +7,6 @@ import re
 
 pad = 10
 defaultmaxmembers = 5
-global filename
-filename = StringVar()
-global maxmembers
 maxmembers = IntVar()
 maxmembers.set(defaultmaxmembers)
 
@@ -30,60 +27,112 @@ class App(Tk):
 
     def __setup(self):
         lblfile = Label(self.frame, text='Fil: ')
-        lblfilename = Label(self.frame, textvariable=filename)
+        lblfile.grid(column=0, row=0, sticky='nw')
+
+        txtfilename = Label(self.frame, textvariable=self.filename)
+        txtfilename.grid(column=1, row=0, sticky='nw')
+
         btnselectfile = Button(self.frame, text='Velg fil', command=self.__handleselectfile)
+        btnselectfile.grid(column=2, row=0, sticky='nw')
+
+        lblmaxmembers = Label(self.frame, text='Maks medlemmer per gruppe: ')
+        lblmaxmembers.grid(column=0, row=1, sticky='nw')
 
         spinmaxmembers = Spinbox(self.frame, from_=2, to=10, textvariable=maxmembers)
-        lblmaxmembers = Label(self.frame, text='Maks medlemmer per gruppe: ')
+        spinmaxmembers.grid(column=1, row=1, sticky='nw')
 
-        lblnumstudentstxt = Label(self.frame, text='Antall studenter: ')
-        lblnumstudents = Label(self.frame, textvariable=self.numstudents)
+        lblnumstudents = Label(self.frame, text='Antall studenter: ')
+        lblnumstudents.grid(column=0, row=2, sticky='nw')
+
+        txtnumstudents = Label(self.frame, textvariable=self.numstudents)
+        txtnumstudents.grid(column=1, row=2, sticky='nw')
 
         lblallstudents = Label(self.frame, text='Alle studenter')
-        global btncreategroups
-        btncreategroups = Button(self.frame, text='Opprett grupper', command=self.__handlecreategroups, state='disabled')
+        lblallstudents.grid(column=0, row=3, sticky='nw')
+        self.btncreategroups = Button(self.frame, text='Opprett grupper', command=self.__handlecreategroups,
+                                      state='disabled')
+        self.btncreategroups.grid(column=2, row=3, sticky='nw')
 
         lststudentsframe = Frame(self.frame)
+        lststudentsframe.grid(column=0, row=10, sticky='nsew')
+
+        self.lststudents = Listbox(lststudentsframe)
+        self.lststudents.pack(fill=BOTH, expand=1)
+
+        lststudentsscroll = Scrollbar(lststudentsframe, orient='vertical')
+        lststudentsscroll.pack(side=RIGHT, fill=Y)
+
+        self.lststudents.config(yscrollcommand=lststudentsscroll.set)
+        self.lststudentsscroll.config(command=self.lststudents.yview)
+
+        groupframe = Frame(self.frame)
+        canvas = Canvas(groupframe)
+        grouplistframe = Frame(canvas)
+        groupscroll = Scrollbar(groupframe, orient='vertical', command=canvas.yview)
+
+        grouplistframe.bind(
+            "<Configure>",
+            lambda e: canvas.configure(
+                scrollregion=canvas.bbox("all")
+            )
+        )
+
+        self.studentvariables = [StringVar(), StringVar(), StringVar(), StringVar()]
+        for s in self.studentvariables:
+            s.set('')
+
+        studentinfoframe = Frame(self.frame)
+        self.studentgroup = IntVar()
+        self.studentgroup.set(0)
+
+        self.studentgroup.trace('w', self.handlespin)
+
+        labeltexts = ['Navn: ', 'Email: ', 'Prog. erfaring: ', 'Arbeidstid: ']
+        labels = []
+        texts = []
+        for ix, l in enumerate(labeltexts):
+            labels.append(Label(studentinfoframe, text=l))
+            texts.append(Label(studentinfoframe, textvariable=self.studentvariables[ix]))
+        lblstudentgroup = Label(studentinfoframe, text='Gruppe: ')
+        global spinstudentgroup
+        spinstudentgroup = Spinbox(studentinfoframe, from_=0, to=0, textvariable=self.studentgroup)
+
+        self.txtmovestudent = StringVar()
+        self.fstrmovestudent = 'Flytt til gruppe %d'
+        self.txtmovestudent.set(self.fstrmovestudent % self.studentgroup.get())
+        self.btnmovestudent = Button(studentinfoframe, textvariable=self.txtmovestudent, command=self.handlemovestudent,
+                                     state='disabled')
+        self.btnmovestudent.grid(column=0, row=len(labels) + 1, sticky='nsew')
+
+        for ix, (lbl, txt) in enumerate(zip(labels, texts)):
+            txt.config(width=30)
+            lbl.grid(column=0, row=ix, sticky='nw')
+            txt.grid(column=1, row=ix, sticky='nw')
+        lblstudentgroup.grid(column=0, row=len(labels), sticky='nw')
+        spinstudentgroup.grid(column=1, row=len(labels), sticky='nw')
+        studentinfoframe.grid(column=0, row=11, sticky='nsew')
 
     def __handleselectfile(self):
-        filename.set(filedialog.askopenfilename(filetypes=(('Excel spreadsheet', '*.xlsx'), ('All files', '*.*'))))
-        if filename.get():
-            global groupregister
-            groupregister = GroupRegister(maxmembers.get())
-            wb = opxl.load_workbook(filename.get())
-            ws = wb.active
-            global headers
-            headers = [c.value[:27] for c in ws[1][3:]]
-            headers[0], headers[1] = headers[1], headers[0]
-            for row in ws.iter_rows(2):
-                vals = []
-                for cell in row:
-                    vals.append(cell.value)
-                # vals[3:7] == [email, name, programming experience, preferred worktime, string of desired partners]
-                student = Student(vals[3], vals[4], vals[5], vals[6], vals[7])
-                if not groupregister.getstudentbyname(vals[4]):
-                    groupregister += student
-                else:
-                    groupregister.updatestudent(vals[4], student)
-
-            self.numstudents.set(len(groupregister.students))
-
-            lststudents.delete(0, END)
-            for s in groupregister.students:
-                lststudents.insert(END, s.name)
-            btncreategroups['state'] = 'normal'
+        self.filename.set(filedialog.askopenfilename(filetypes=(('Excel spreadsheet', '*.xlsx'), ('All files', '*.*'))))
+        if self.filename.get():
+            self.numstudents.set(len(self.groupregister.students))
+            self.lststudents.delete(0, END)
+            for s in self.groupregister.students:
+                self.lststudents.insert(END, s.name)
+            self.btncreategroups['state'] = 'normal'
         else:
-            btncreategroups['state'] = 'disabled'
-            lststudents.delete(0, END)
-            numstudents.set(0)
+            self.btncreategroups['state'] = 'disabled'
+            self.lststudents.delete(0, END)
+            self.numstudents.set(0)
 
     def __handlecreategroups(self):
-        groupregister.maxmembers = maxmembers.get()
-        groupregister.creategroups(True)
+        self.groupregister.maxmembers = maxmembers.get()
+        self.groupregister.creategroups(True)
         grouplists = []
 
-        for ix, g in enumerate(groupregister.groups):
+        for ix, g in enumerate(self.groupregister.groups):
             grouplists.append(MultiColumnTreeView(grouplistframe, headers, g.membertuples(), 'Gruppe %s' % (ix + 1)))
+            grouplists[-1].tree.bind('<<TreeviewSelect>>', self.handletreeselect)
         for gl in grouplists:
             gl.pack(fill=X, expand=True)
         spinstudentgroup.config(from_=1, to=len(groupregister.groups))
@@ -101,6 +150,9 @@ class App(Tk):
         tree = evt.widget
         if tree.selection():
             name = tree.set(tree.selection()[0], column='Navn')
-            lststudents.select_clear(0, END)
-            lststudents.select_set(lststudents.index(name))
+            self.lststudents.select_clear(0, END)
+            self.lststudents.select_set(self.lststudents.index(name))
         pass
+
+    def handlespin(self, var, blank, mode):
+        self.txtmovestudent.set(self.fstrmovestudent % self.studentgroup.get())

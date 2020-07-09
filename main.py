@@ -3,15 +3,18 @@ from tkinter.ttk import *
 import openpyxl as opxl
 from student import Student
 from group import Group
+from groupregister import GroupRegister
 from multicolumntreeview import MultiColumnTreeView
 from app import App
 
-
 global curstudent
-global lststudents
 global numstudents
 numstudents = IntVar()
 numstudents.set(0)
+defaultmaxmembers = 5
+global maxmembers
+maxmembers = IntVar()
+maxmembers.set(defaultmaxmembers)
 
 
 def handlelistchange(evt):
@@ -40,92 +43,29 @@ def handlemovestudent():
     pass
 
 
-def handlespin(var, blank, mode):
-    txtmovestudent.set(fstrmovestudent % studentgroup.get())
+def handlefilenamechange(filename):
+    global groupregister
+    if filename.get():
+        wb = opxl.load_workbook(filename.get())
+        ws = wb.active
+        headers = [c.value[:27] for c in ws[1][3:]]
+        headers[0], headers[1] = headers[1], headers[0]
+        for row in ws.iter_rows(2):
+            vals = []
+            for cell in row:
+                vals.append(cell.value)
+            # vals[3:7] == [email, name, programming experience, preferred worktime, string of desired partners]
+            student = Student(vals[3], vals[4], vals[5], vals[6], vals[7])
+            if not groupregister.getstudentbyname(vals[4]):
+                groupregister += student
+            else:
+                groupregister.updatestudent(vals[4], student)
 
 
 def createapp():
-    global app
     app = App(title='Gruppesammensetning', geometry='1200x700')
-    # global frame
-    # frame = Frame(app)
-
-    global lststudents
-    lststudents = Listbox(lststudentsframe)
-    lststudents.bind('<<ListboxSelect>>', handlelistchange)
-    lststudentsscroll = Scrollbar(lststudentsframe, orient='vertical')
-
-    groupframe = Frame(frame)
-    canvas = Canvas(groupframe)
-    global grouplistframe
-    grouplistframe = Frame(canvas)
-    groupscroll = Scrollbar(groupframe, orient='vertical', command=canvas.yview)
-
-    grouplistframe.bind(
-        "<Configure>",
-        lambda e: canvas.configure(
-            scrollregion=canvas.bbox("all")
-        )
-    )
-
-    studentinfoframe = Frame(frame)
-    global studentvariables
-    studentvariables = [StringVar(), StringVar(), StringVar(), StringVar()]
-    for s in studentvariables:
-        s.set('')
-    global studentgroup
-    studentgroup = IntVar()
-    studentgroup.set(0)
-
-    studentgroup.trace('w', handlespin)
-
-    labeltexts = ['Navn: ', 'Email: ', 'Prog. erfaring: ', 'Arbeidstid: ']
-    labels = []
-    texts = []
-    for ix, l in enumerate(labeltexts):
-        labels.append(Label(studentinfoframe, text=l))
-        texts.append(Label(studentinfoframe, textvariable=studentvariables[ix]))
-    lblstudentgroup = Label(studentinfoframe, text='Gruppe: ')
-    global spinstudentgroup
-    spinstudentgroup = Spinbox(studentinfoframe, from_=0, to=0, textvariable=studentgroup)
-
-    for ix, (lbl, txt) in enumerate(zip(labels, texts)):
-        txt.config(width=30)
-        lbl.grid(column=0, row=ix, sticky='nw')
-        txt.grid(column=1, row=ix, sticky='nw')
-    lblstudentgroup.grid(column=0, row=len(labels), sticky='nw')
-    spinstudentgroup.grid(column=1, row=len(labels), sticky='nw')
-    studentinfoframe.grid(column=0, row=11, sticky='nsew')
-
-    global fstrmovestudent
-    global txtmovestudent
-    global btnmovestudent
-    txtmovestudent = StringVar()
-    fstrmovestudent = 'Flytt til gruppe %d'
-    txtmovestudent.set(fstrmovestudent % studentgroup.get())
-    btnmovestudent = Button(studentinfoframe, textvariable=txtmovestudent, command=handlemovestudent, state='disabled')
-    btnmovestudent.grid(column=0, row=len(labels) + 1, sticky='nsew')
-
-    lblfile.grid(column=0, row=0, sticky='nw')
-    lblfilename.grid(column=1, row=0, sticky='nw')
-    btnselectfile.grid(column=2, row=0, sticky='nw')
-
-    lblmaxmembers.grid(column=0, row=1, sticky='nw')
-    spinmaxmembers.grid(column=1, row=1, sticky='nw')
-
-    lblnumstudentstxt.grid(column=0, row=2, sticky='nw')
-    lblnumstudents.grid(column=1, row=2, sticky='nw')
-
-    lblallstudents.grid(column=0, row=3, sticky='nw')
-    btncreategroups.grid(column=2, row=3, sticky='nw')
-
-    lststudentsframe.grid(column=0, row=10, sticky='nsew')
-
-    lststudentsscroll.pack(side=RIGHT, fill=Y)
-    lststudents.pack(fill=BOTH, expand=1)
-
-    lststudents.config(yscrollcommand=lststudentsscroll.set)
-    lststudentsscroll.config(command=lststudents.yview)
+    app.filename.trace_add('write', lambda name, index, mode, filename=app.filename: handlefilenamechange(filename))
+    app.lststudents.bind('<<ListboxSelect>>', handlelistchange)
 
     groupframe.grid(column=1, row=10, columnspan=2, rowspan=2, sticky='nsew')
 
@@ -149,5 +89,9 @@ def createapp():
 
 
 if __name__ == '__main__':
+    global app
+    global groupregister
     app = createapp()
+    groupregister = GroupRegister(maxmembers.get())
+    app.groupregister = groupregister
     app.mainloop()
