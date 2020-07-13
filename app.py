@@ -99,7 +99,7 @@ class App(Tk):
 
         self.studentgroup.trace('w', self.handlespin)
 
-        labeltexts = ['Navn: ', 'Email: ', 'Prog. erfaring: ', 'Arbeidstid: ']
+        labeltexts = ['Navn: ', 'Email: ', 'Prog. erfaring: \n', 'Arbeidstid: ']
         labels = []
         texts = []
         for ix, l in enumerate(labeltexts):
@@ -111,7 +111,7 @@ class App(Tk):
         for ix, (lbl, txt) in enumerate(zip(labels, texts)):
             txt.config(width=30)
             lbl.grid(column=0, row=ix, sticky='nw')
-            txt.grid(column=1, row=ix, sticky='nw')
+            txt.grid(column=1, row=ix, sticky='ne')
         lblstudentgroup.grid(column=0, row=len(labels), sticky='nw')
         self.spinstudentgroup.grid(column=1, row=len(labels), sticky='nw')
         studentinfoframe.grid(column=0, row=11, sticky='nsew')
@@ -150,16 +150,16 @@ class App(Tk):
     def __handlecreategroups(self):
         self.groupregister.maxmembers = self.maxmembers.get()
         self.groupregister.creategroups(True)
-        grouplists = []
+        self.grouplists = []
 
         for child in self.grouplistframe.winfo_children():
             child.destroy()
 
         for ix, g in enumerate(self.groupregister.groups):
-            grouplists.append(
+            self.grouplists.append(
                 MultiColumnTreeView(self.grouplistframe, self.headers, g.membertuples(), 'Gruppe %s' % (ix + 1)))
-            grouplists[-1].tree.bind('<<TreeviewSelect>>', self.handletreeselect)
-        for gl in grouplists:
+            self.grouplists[-1].tree.bind('<<TreeviewSelect>>', self.handletreeselect)
+        for gl in self.grouplists:
             gl.pack(fill=X, expand=True)
         self.spinstudentgroup.config(from_=1, to=len(self.groupregister.groups))
         self.studentgroup.set(1)
@@ -180,6 +180,10 @@ class App(Tk):
 
     def handlemovestudent(self):
         if self.curstudent:
+            tree = self.grouplists[self.groupregister.getgroupindexbystudentname(self.curstudent.name)].tree
+            tree.delete(tree.selection())
+            tree = self.grouplists[int(self.spinstudentgroup.get()) - 1].tree
+            tree.insert('', END, values=self.curstudent.gettuple())
             self.groupregister.movestudent(self.curstudent,
                                            self.groupregister.groups[int(self.spinstudentgroup.get()) - 1], True)
             print(self.groupregister.getgroupindexbystudentname(self.curstudent.name))
