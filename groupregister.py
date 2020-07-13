@@ -153,8 +153,8 @@ class GroupRegister:
                             break
         for g in self.groups:
             for s in students:
-                if len(g) < self.maxmembers - len(s.partners) and not s.hasgroup and (not checktime or
-                                                                                      g.time == s.worktime or s.worktime == 'Fleksibel' or g.time == ''):
+                if len(g) < self.maxmembers and not s.hasgroup and (not checktime or
+                                                                    g.time == s.worktime or s.worktime == 'Fleksibel' or g.time == ''):
                     self.__addmembertogroup(s, g)
 
     def movestudent(self, student: Student, togroup: Group, ignorelimit=False):

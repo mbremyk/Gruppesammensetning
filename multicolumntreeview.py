@@ -4,13 +4,12 @@ from tkinter.ttk import *
 
 
 class MultiColumnTreeView(Frame):
-    def __init__(self, master, columns, data, text, handletreeselect, **kw):
+    def __init__(self, master, columns, data, text, **kw):
         super().__init__(master, **kw)
         self.master = master
         self.columns = columns
         self.data = data
         self.text = text
-        self.handletreeselect = handletreeselect
         self.label = None
         self.tree = None
         self.__setupwidgets()

@@ -90,6 +90,3 @@ class Group:
         for m in self.members:
             tuples.append(m.gettuple())
         return tuples
-
-    def gettreeview(self, handletreeselect):
-
