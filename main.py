@@ -40,8 +40,8 @@ def handlefilenamechange(filename):
             vals = []
             for cell in row:
                 vals.append(cell.value)
-            # vals[3:7] == [email, name, programming experience, preferred worktime, string of desired partners]
-            student = Student(vals[3], vals[4], vals[5], vals[6], vals[7])
+            # vals[3:8] == [email, name, username, programming experience, preferred worktime, string of desired partners]
+            student = Student(vals[3], vals[4], vals[5], vals[6], vals[7], vals[8])
             if not groupregister.getstudentbyemail(vals[3]):
                 groupregister += student
             else:
