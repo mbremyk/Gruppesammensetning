@@ -5,9 +5,16 @@ from student import Student
 import openpyxl as opxl
 import re
 from multicolumntreeview import MultiColumnTreeView
+import csv
 
-pad = 10
+pad = 5
 defaultmaxmembers = 5
+groupheaders = (
+    "Group Code", "Title", "Description", "Group Set", "Available", "Personalization", "Self Enroll", "Max Enrollment",
+    "Show Members", "Sign Up From Group List", "Sign Up Name", "Sign Up Instructions")
+memberheaders = ("Group Code", "User Name", "Student Id", "First Name", "Last Name")
+filetypes = [('Comma separated values', '*.csv'), ('All files', '*.*')]
+defaultextension = '.csv'
 
 
 class App(Tk):
@@ -41,8 +48,8 @@ class App(Tk):
         lblmaxmembers = Label(self.frame, text='Maks medlemmer per gruppe: ')
         lblmaxmembers.grid(column=0, row=1, sticky='nw')
 
-        spinmaxmembers = Spinbox(self.frame, from_=2, to=10, textvariable=self.maxmembers)
-        spinmaxmembers.grid(column=1, row=1, sticky='nw')
+        self.spinmaxmembers = Spinbox(self.frame, from_=2, to=10, textvariable=self.maxmembers)
+        self.spinmaxmembers.grid(column=1, row=1, sticky='nw')
 
         lblnumstudents = Label(self.frame, text='Antall studenter: ')
         lblnumstudents.grid(column=0, row=2, sticky='nw')
@@ -52,9 +59,22 @@ class App(Tk):
 
         lblallstudents = Label(self.frame, text='Alle studenter')
         lblallstudents.grid(column=0, row=3, sticky='nw')
-        self.btncreategroups = Button(self.frame, text='Opprett grupper', command=self.__handlecreategroups,
+
+        btnframe = Frame(self.frame)
+        btnframe.grid(column=1, row=3, columnspan=2, sticky='nsew')
+
+        self.btncreategroups = Button(btnframe, text='Opprett grupper', command=self.__handlecreategroups,
                                       state='disabled')
-        self.btncreategroups.grid(column=2, row=3, sticky='nw')
+        self.btncreategroups.grid(column=0, row=0, sticky='nw', padx=pad)
+
+        self.btnexportgroups = Button(btnframe, text='Eksporter grupper...', command=self.__exportgroups,
+                                      state='disabled')
+        self.btnexportgroups.grid(column=1, row=0, sticky='nw', padx=pad)
+
+        self.btnexportgroupmembers = Button(btnframe, text='Eksporter gruppemedlemmer...',
+                                            command=self.__exportgroupmembers,
+                                            state='disabled')
+        self.btnexportgroupmembers.grid(column=2, row=0, sticky='nw', padx=pad)
 
         self.lststudentsframe = Frame(self.frame)
         self.lststudentsframe.grid(column=0, row=10, sticky='nsew')
@@ -130,7 +150,7 @@ class App(Tk):
         self.frame.grid_columnconfigure(1, weight=2)
         self.frame.grid_columnconfigure(2, weight=0)
         self.frame.grid_rowconfigure(10, weight=1)
-        self.frame.grid(column=0, row=0, sticky='nsew', padx=pad, pady=pad)
+        self.frame.grid(column=0, row=0, sticky='nsew', padx=2 * pad, pady=2 * pad)
         self.lststudentsframe.grid_columnconfigure(0, weight=1)
         self.lststudentsframe.grid_rowconfigure(0, weight=1)
 
@@ -140,7 +160,7 @@ class App(Tk):
             self.numstudents.set(len(self.groupregister.students))
             self.lststudents.delete(0, END)
             for s in self.groupregister.students:
-                self.lststudents.insert(END, s.name)
+                self.lststudents.insert(END, s.name + ' - ' + s.email)
             self.btncreategroups['state'] = 'normal'
         else:
             self.btncreategroups['state'] = 'disabled'
@@ -162,29 +182,81 @@ class App(Tk):
         for gl in self.grouplists:
             gl.pack(fill=X, expand=True)
         self.spinstudentgroup.config(from_=1, to=len(self.groupregister.groups))
-        self.studentgroup.set(1)
         if self.curstudent:
-            self.btnmovestudent['state'] = 'normal'
+            self.studentgroup.set(self.groupregister.getgroupindexbystudentemail(self.curstudent.email))
+        self.btnexportgroups['state'] = 'normal'
+        self.btnexportgroupmembers['state'] = 'normal'
+
+    def __exportgroups(self):
+        filename = filedialog.asksaveasfilename(filetypes=filetypes, defaultextension=defaultextension, initialfile='Grupper.csv')
+        if not filename:
+            return
+        rows = []
+        for ix, g in enumerate(self.groupregister.groups):
+            rows.append(('Gruppe_gc_%s' % (ix + 1), 'Gruppe %d' % (ix + 1), '', 'Gruppe_gc_0', 'Y', '', 'N', '', '', '',
+                         '', ''))
+        file = open(filename, 'w', newline='')
+        writer = csv.writer(file, quoting=csv.QUOTE_ALL)
+        writer.writerows(rows)
+        pass
+
+    def __exportgroupmembers(self):
+        filename = filedialog.asksaveasfilename(filetypes=filetypes, defaultextension=defaultextension,
+                                                initialfile='Gruppemedlemmer.csv')
+        if not filename:
+            return
+        rows = []
+        for ix, g in enumerate(self.groupregister.groups):
+            for s in g.members:
+                names = s.name.split()
+                firstname = ' '.join(names[:-1])
+                lastname = names[-1]
+                rows.append(('Gruppe_gc_%s' % (ix + 1), s.email[0:s.email.find('@')], '', firstname, lastname))
+        file = open(filename, 'w', newline='')
+        writer = csv.writer(file, quoting=csv.QUOTE_ALL)
+        writer.writerows(rows)
+        pass
 
     def handletreeselect(self, evt):
         tree = evt.widget
         if tree.selection():
             name = tree.set(tree.selection()[0], column='Navn')
+            email = tree.set(tree.selection()[0], column='E-postadresse')
             self.lststudents.select_clear(0, END)
-            self.lststudents.select_set(self.lststudents.get(0, END).index(name))
-            self.lststudents.event_generate('<<ListboxSelect>>', when='tail')
+            self.lststudents.select_set(self.lststudents.get(0, END).index(name + ' - ' + email))
+            self.curstudent = self.groupregister.getstudentbyemail(
+                self.lststudents.get(self.lststudents.curselection()[0]).split('-')[-1].strip())
+            self.updatestudentinfolabels()
+            for gl in tree.master.master.winfo_children():
+                if isinstance(gl, MultiColumnTreeView) and gl.tree is not tree:
+                    gl.tree.selection_set()
         pass
+
+    def updatestudentinfolabels(self):
+        if len(self.groupregister.groups):
+            self.studentgroup.set(self.groupregister.getgroupindexbystudentemail(self.curstudent.email) + 1)
+        student = self.curstudent.gettuple()
+        student = list(student)
+        del (student[-1])
+        student[2] = student[2].replace(';', '\n').strip('\n')
+        for ix, s in enumerate(self.studentvariables):
+            s.set(student[ix])
+        self.txtmovestudent.set(self.fstrmovestudent % self.studentgroup.get())
 
     def handlespin(self, var, blank, mode):
         self.txtmovestudent.set(self.fstrmovestudent % self.studentgroup.get())
+        if self.curstudent and self.groupregister.getgroupindexbystudentemail(
+                self.curstudent.email) is not self.studentgroup.get():
+            self.btnmovestudent['state'] = 'normal'
+        else:
+            self.btnmovestudent['state'] = 'disabled'
 
     def handlemovestudent(self):
         if self.curstudent:
-            tree = self.grouplists[self.groupregister.getgroupindexbystudentname(self.curstudent.name)].tree
+            tree = self.grouplists[self.groupregister.getgroupindexbystudentemail(self.curstudent.email)].tree
             tree.delete(tree.selection())
             tree = self.grouplists[int(self.spinstudentgroup.get()) - 1].tree
             tree.insert('', END, values=self.curstudent.gettuple())
             self.groupregister.movestudent(self.curstudent,
                                            self.groupregister.groups[int(self.spinstudentgroup.get()) - 1], True)
-            print(self.groupregister.getgroupindexbystudentname(self.curstudent.name))
         pass

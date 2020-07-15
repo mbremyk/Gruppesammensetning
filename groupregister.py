@@ -38,6 +38,11 @@ class GroupRegister:
             if s.name == name:
                 return s
 
+    def getstudentbyemail(self, email: str):
+        for s in self.students:
+            if s.email == email:
+                return s
+
     def creategroups(self, resetgroups=False):
         if resetgroups:
             self.groups = [Group(self.maxmembers) for x in range(ceil(len(self.students) / self.maxmembers))]
@@ -61,14 +66,19 @@ class GroupRegister:
         self.__removeemptygroups()
         self.__updatepartners()
 
-    def updatestudent(self, name, student):
-        self.students[self.students.index(self.getstudentbyname(name))].update(student)
+    def updatestudent(self, email, student):
+        self.students[self.students.index(self.getstudentbyemail(email))].update(student)
         self.__updatepartners()
         pass
 
     def getgroupindexbystudentname(self, name):
         for g in self.groups:
             if g.hasmember(self.getstudentbyname(name)):
+                return self.groups.index(g)
+
+    def getgroupindexbystudentemail(self, email):
+        for g in self.groups:
+            if g.hasmember(self.getstudentbyemail(email)):
                 return self.groups.index(g)
 
     def __shrinkgroups(self):

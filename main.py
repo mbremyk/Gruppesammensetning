@@ -5,31 +5,31 @@ from student import Student
 from group import Group
 from groupregister import GroupRegister
 from app import App
+from multicolumntreeview import MultiColumnTreeView
 
 defaultmaxmembers = 5
 
 
 def handlelistchange(evt):
     lst = evt.widget
-    if len(app.groupregister.groups):
-        app.btnmovestudent['state'] = 'normal'
     if not lst.curselection():
         return
     index = lst.curselection()[0]
-    app.curstudent = app.groupregister.getstudentbyname(lst.get(index))
-    if len(app.groupregister.groups):
-        app.studentgroup.set(app.groupregister.getgroupindexbystudentname(app.curstudent.name) + 1)
-    student = app.curstudent.gettuple()
-    student = list(student)
-    del (student[-1])
-    student[2] = student[2].replace(';', '\n').strip('\n')
-    for ix, s in enumerate(app.studentvariables):
-        s.set(student[ix])
-    app.txtmovestudent.set(app.fstrmovestudent % app.studentgroup.get())
+    app.curstudent = app.groupregister.getstudentbyemail(lst.get(index).split('-')[-1].strip())
+    app.updatestudentinfolabels()
+    if app.groupregister.getgroupindexbystudentemail(app.curstudent.email):
+        tree = app.grouplists[app.groupregister.getgroupindexbystudentemail(app.curstudent.email)].tree
+        for item in tree.get_children():
+            if tree.set(item, column='Navn') == app.curstudent.name:
+                tree.selection_set(item)
+                tree.focus(item)
+                break
 
 
 def handlefilenamechange(filename):
     global groupregister
+    groupregister = GroupRegister(app.spinmaxmembers.get())
+    app.groupregister = groupregister
     if filename.get():
         wb = opxl.load_workbook(filename.get())
         ws = wb.active
@@ -42,10 +42,10 @@ def handlefilenamechange(filename):
                 vals.append(cell.value)
             # vals[3:7] == [email, name, programming experience, preferred worktime, string of desired partners]
             student = Student(vals[3], vals[4], vals[5], vals[6], vals[7])
-            if not groupregister.getstudentbyname(vals[4]):
+            if not groupregister.getstudentbyemail(vals[3]):
                 groupregister += student
             else:
-                groupregister.updatestudent(vals[4], student)
+                groupregister.updatestudent(vals[3], student)
 
 
 def createapp():
