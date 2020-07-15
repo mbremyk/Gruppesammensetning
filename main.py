@@ -1,11 +1,7 @@
-from tkinter import *
-from tkinter.ttk import *
 import openpyxl as opxl
 from student import Student
-from group import Group
 from groupregister import GroupRegister
 from app import App
-from multicolumntreeview import MultiColumnTreeView
 
 defaultmaxmembers = 5
 

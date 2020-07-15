@@ -1,8 +1,5 @@
 from tkinter import *
 from tkinter import filedialog
-from groupregister import GroupRegister
-from student import Student
-import openpyxl as opxl
 import re
 from multicolumntreeview import MultiColumnTreeView
 import csv
@@ -192,7 +189,8 @@ class App(Tk):
         self.btnexportgroupmembers['state'] = 'normal'
 
     def __exportgroups(self):
-        filename = filedialog.asksaveasfilename(filetypes=filetypes, defaultextension=defaultextension, initialfile='Grupper.csv')
+        filename = filedialog.asksaveasfilename(filetypes=filetypes, defaultextension=defaultextension,
+                                                initialfile='Grupper.csv')
         if not filename:
             return
         rows = []
