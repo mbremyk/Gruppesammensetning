@@ -2,9 +2,10 @@ import re
 
 
 class Student:
-    def __init__(self, email, name, prog, worktime, strpartners):
+    def __init__(self, email, name, username, prog, worktime, strpartners):
         self.email = email
         self.name = name
+        self.username = username
         self.strprog = prog
         self.prog = 'JavaScript' in prog or 'språk' in prog
         self.worktime = worktime
@@ -24,7 +25,7 @@ class Student:
         self.partners.remove(partner)
 
     def gettuple(self):
-        return self.name, self.email, self.strprog, self.worktime, self.strpartners
+        return self.name, self.email, self.username, self.strprog, self.worktime, self.strpartners
 
     def update(self, student):
         if not isinstance(student, Student):

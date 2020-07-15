@@ -91,16 +91,20 @@ class App(Tk):
         groupframe.grid(column=1, row=10, columnspan=2, rowspan=2, sticky='nsew')
 
         canvas = Canvas(groupframe)
-        canvas.pack(side=LEFT, fill=BOTH, expand=1)
 
         self.grouplistframe = Frame(canvas)
 
         canvas.create_window((0, 0), window=self.grouplistframe, anchor="nw")
 
-        groupscroll = Scrollbar(groupframe, orient='vertical', command=canvas.yview)
-        groupscroll.pack(side=RIGHT, fill=Y)
+        groupscrollx = Scrollbar(groupframe, orient='vertical', command=canvas.yview)
+        groupscrollx.pack(side=RIGHT, fill=Y)
 
-        canvas.configure(yscrollcommand=groupscroll.set)
+        groupscrolly = Scrollbar(groupframe, orient='horizontal', command=canvas.xview)
+        groupscrolly.pack(side=BOTTOM, fill=X)
+
+        canvas.pack(side=LEFT, fill=BOTH, expand=1)
+
+        canvas.configure(yscrollcommand=groupscrollx.set, xscrollcommand=groupscrollx.set)
 
         self.grouplistframe.bind(
             "<Configure>",
