@@ -77,7 +77,8 @@ class Group:
     def removemember(self, member):
         if member in self.members:
             self.members.remove(member)
-            if not any(s.hasprog for s in self.members):
+            member.hasgroup = False
+            if not any(s.prog for s in self.members):
                 self.prog = False
             if not any('tid' in s.worktime for s in self.members):
                 self.time = ''

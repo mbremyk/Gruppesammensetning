@@ -38,6 +38,11 @@ class GroupRegister:
             if s.name == name:
                 return s
 
+    def getstudentbyemail(self, email: str):
+        for s in self.students:
+            if s.email == email:
+                return s
+
     def creategroups(self, resetgroups=False):
         if resetgroups:
             self.groups = [Group(self.maxmembers) for x in range(ceil(len(self.students) / self.maxmembers))]
@@ -61,14 +66,19 @@ class GroupRegister:
         self.__removeemptygroups()
         self.__updatepartners()
 
-    def updatestudent(self, name, student):
-        self.students[self.students.index(self.getstudentbyname(name))].update(student)
+    def updatestudent(self, email, student):
+        self.students[self.students.index(self.getstudentbyemail(email))].update(student)
         self.__updatepartners()
         pass
 
     def getgroupindexbystudentname(self, name):
         for g in self.groups:
             if g.hasmember(self.getstudentbyname(name)):
+                return self.groups.index(g)
+
+    def getgroupindexbystudentemail(self, email):
+        for g in self.groups:
+            if g.hasmember(self.getstudentbyemail(email)):
                 return self.groups.index(g)
 
     def __shrinkgroups(self):
@@ -120,8 +130,8 @@ class GroupRegister:
                         self.__addmembertogroup(s, g)
                         break
 
-    def __addmembertogroup(self, student: Student, group: Group) -> None:
-        if len(group) >= self.maxmembers:
+    def __addmembertogroup(self, student: Student, group: Group, ignorelimit=False) -> None:
+        if len(group) >= self.maxmembers and not ignorelimit:
             raise Exception('Group is full')
         if student.hasgroup:
             raise ValueError('Student already in a group')
@@ -153,17 +163,18 @@ class GroupRegister:
                             break
         for g in self.groups:
             for s in students:
-                if len(g) < self.maxmembers - len(s.partners) and not s.hasgroup and (not checktime or
-                                                                                      g.time == s.worktime or s.worktime == 'Fleksibel' or g.time == ''):
+                if len(g) < self.maxmembers and not s.hasgroup and (not checktime or
+                                                                    g.time == s.worktime or s.worktime == 'Fleksibel' or g.time == ''):
                     self.__addmembertogroup(s, g)
 
-    def __movestudent(self, student: Student, togroup: Group):
-        if len(togroup) >= self.maxmembers:
+    def movestudent(self, student: Student, togroup: Group, ignorelimit=False):
+        if len(togroup) >= self.maxmembers and not ignorelimit:
             raise Exception('Cannot move student to full group')
         for g in self.groups:
             if student in g.members:
                 g.removemember(student)
-                self.__addmembertogroup(student, togroup)
+                self.__addmembertogroup(student, togroup, True)
+                break
 
     def __setallhasgroup(self, hasgroup):
         for s in self.students:
