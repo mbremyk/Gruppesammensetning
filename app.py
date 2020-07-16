@@ -213,7 +213,7 @@ class App(Tk):
                 names = s.name.split()
                 firstname = ' '.join(names[:-1])
                 lastname = names[-1]
-                rows.append(('Gruppe_gc_%s' % (ix + 1), s.email[0:s.email.find('@')], '', firstname, lastname))
+                rows.append(('Gruppe_gc_%s' % (ix + 1), s.username, '', firstname, lastname))
         file = open(filename, 'w', newline='')
         writer = csv.writer(file, quoting=csv.QUOTE_ALL)
         writer.writerows(rows)

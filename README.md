@@ -4,7 +4,7 @@ Dette er et program for sammensetning av grupper til faget INFT1003 Webteknologi
 
 ## Bruksanvisning
 #### 1. Last ned .exe-filen
-I mappen ./dist/ finner du [denne filen](./dist/main.exe). Trykk på last ned, og lagre den på et fornuftig sted.
+I mappen ./dist/ finner du [denne filen](./dist/Gruppesammensetning.exe). Trykk på last ned, og lagre den på et fornuftig sted.
 
 #### 2. Generer et Excel-ark med data
 For å kunne generere grupper, trenger du et regneark på formatet:
@@ -27,7 +27,7 @@ Du vil nå få en kopi av skjemaet koblet til din Microsoft-konto
 5. Etter at alle studentene har svart trykker du på _Svar_ og _Åpne i Excel_. Da vil du laste ned en Excel-fil du kan bruke i programmet
 
 #### 3. Åpne programmet
-Finn fram til der du lagret [main.exe](./dist/main.exe) og dobbeltklikk på filen
+Finn fram til der du lagret [main.exe](./dist/Gruppesammensetning.exe) og dobbeltklikk på filen
 
 #### 4. Importer dataene fra steg 2
 Klikk på knappen _Velg fil_  
@@ -41,3 +41,11 @@ En liste med grupper og informasjon om studentene i hver gruppe skal komme nede 
 
 #### 6. Flytte studenter
 Hvis du ikke er fornøyd med gruppene programmet har satt opp, kan du velge en student fra listen til venstre eller i gruppelisten, endre tallet i boksen markert _Gruppe:_, og trykke på _Flytt til gruppe X_
+
+#### 7. Eksportere grupper og gruppemedlemmer
+Når du er fornøyd med gruppene, kan du eksportere grupper og gruppemedlemmer ved å trykke på knappene _Eksporter grupper..._ og _Eksporter gruppemedlemmer..._
+Siden BlackBoard importerer grupper og gruppemedlemmer separat, må det også eksporteres som to filer.
+Velg filplassering og navn på filene (standard er _Grupper.csv_ og _Gruppemedlemmer.csv_)
+
+#### 8. Importér grupper og gruppemedlemmer i BlackBoard
+For å importere grupper og gruppemedlemmer går du til fagrommet 
