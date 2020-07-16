@@ -48,4 +48,17 @@ Siden BlackBoard importerer grupper og gruppemedlemmer separat, må det også ek
 Velg filplassering og navn på filene (standard er _Grupper.csv_ og _Gruppemedlemmer.csv_)
 
 #### 8. Importér grupper og gruppemedlemmer i BlackBoard
-For å importere grupper og gruppemedlemmer går du til fagrommet 
+For å importere grupper og gruppemedlemmer går du til fagrommet til faget ditt i BlackBoard.
+Under _Emnebehandling_ på venstre side velger du _Brukere og grupper_ og trykker på _Grupper_.  
+Trykk på _Importer_  
+Under _IMPORTER GRUPPEMEDLEMMER_ trykker du på _Bla gjennom min datamaskin_, navigerer til der du lagret de eksporterte filene, og velger filen som inneholder Gruppemedlemmene, standard navn er _Gruppemedlemmer.csv_  
+Under _IMPORTER GRUPPER_ gjør du det samme, men velger filen med gruppene istedenfor, standard navn er _Grupper.csv_  
+Velg hvilke verktøy gruppene skal ha tilgang til, og trykk _Send_  
+BlackBoard er litt tregt, så om du ikke ser gruppene med én gang skal det bare være å vente litt og så laste inn siden på nytt med F5 eller Ctrl+R  
+Hvis du ikke har endret innstillingene dine for mailing i BlackBoard skal du også få en mail når gruppene er importert
+
+Nå skal gruppene være importert i BlackBoard. Sjekk om alle studentene er i en gruppe, og legg inn de som mangler
+
+
+### Support
+Ved eventuelle bugs eller problemer med programmet kan jeg kontaktes på [magbre@stud.ntnu.no](mailto:magbre@stud.ntnu.no?subject=Gruppesammensetning)
