@@ -61,4 +61,4 @@ Nå skal gruppene være importert i BlackBoard. Sjekk om alle studentene er i en
 
 
 ### Support
-Ved eventuelle bugs eller problemer med programmet kan jeg kontaktes på [magbre@stud.ntnu.no](mailto:magbre@stud.ntnu.no?subject=Gruppesammensetning)
+Ved eventuelle bugs eller problemer med programmet kan jeg kontaktes på [magbre@ntnu.no](mailto:magbre@ntnu.no?subject=Gruppesammensetning)
