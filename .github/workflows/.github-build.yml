@@ -36,4 +36,4 @@ jobs:
         pytest test.py
     - name: build
       run: |
-        pyinstaller --clean -yFw main.py -n Gruppesammensetning
+        pyinstaller --clean -yFw main.py -n Gruppesammensetning_mac
