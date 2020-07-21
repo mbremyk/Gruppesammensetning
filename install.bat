@@ -1,1 +1,1 @@
-pyinstaller --clean -yFw main.py -n Gruppesammensetning
+pyinstaller --clean -yFw main.py -n Gruppesammensetning_win
