@@ -12,6 +12,7 @@ groupheaders = (
 memberheaders = ("Group Code", "User Name", "Student Id", "First Name", "Last Name")
 filetypes = [('Comma separated values', '*.csv'), ('All files', '*.*')]
 defaultextension = '.csv'
+progindex = 3
 
 
 class App(Tk):
@@ -73,6 +74,12 @@ class App(Tk):
                                             state='disabled')
         self.btnexportgroupmembers.grid(column=2, row=0, sticky='nw', padx=pad)
 
+        self.strexport = StringVar()
+        self.exporttexts = ['', 'Grupper eksportert', 'Gruppemedlemmer eksportert', 'Kunne ikke eksportere grupper', 'Kunne ikke eksportere gruppemedlemmer']
+        self.strexport.set(self.exporttexts[0])
+        self.txtexport = Label(btnframe, textvariable=self.strexport)
+        self.txtexport.grid(column=10, row=0, sticky='ne', padx=pad)
+
         self.lststudentsframe = Frame(self.frame)
         self.lststudentsframe.grid(column=0, row=10, sticky='nsew')
 
@@ -110,7 +117,7 @@ class App(Tk):
             )
         )
 
-        self.studentvariables = [StringVar(), StringVar(), StringVar(), StringVar()]
+        self.studentvariables = [StringVar(), StringVar(), StringVar(), StringVar(), StringVar()]
         for s in self.studentvariables:
             s.set('')
 
@@ -120,12 +127,12 @@ class App(Tk):
 
         self.studentgroup.trace('w', self.handlespin)
 
-        labeltexts = ['Navn: ', 'Email: ', 'Prog. erfaring: \n', 'Arbeidstid: ']
+        labeltexts = ['Navn: ', 'Email: ', 'Brukernavn', 'Prog. erfaring: \n', 'Arbeidstid: ']
         labels = []
         texts = []
         for ix, l in enumerate(labeltexts):
             labels.append(Label(studentinfoframe, text=l))
-            texts.append(Label(studentinfoframe, textvariable=self.studentvariables[ix]))
+            texts.append(Label(studentinfoframe, textvariable=self.studentvariables[ix], justify=LEFT))
         lblstudentgroup = Label(studentinfoframe, text='Gruppe: ')
         self.spinstudentgroup = Spinbox(studentinfoframe, from_=0, to=0, textvariable=self.studentgroup)
 
@@ -157,6 +164,7 @@ class App(Tk):
 
     def __handleselectfile(self):
         self.filename.set(filedialog.askopenfilename(filetypes=(('Excel spreadsheet', '*.xlsx'), ('All files', '*.*'))))
+        # Call to main.handlefilenamechange() here
         if self.filename.get():
             self.numstudents.set(len(self.groupregister.students))
             self.lststudents.delete(0, END)
@@ -192,6 +200,8 @@ class App(Tk):
         filename = filedialog.asksaveasfilename(filetypes=filetypes, defaultextension=defaultextension,
                                                 initialfile='Grupper.csv')
         if not filename:
+            self.strexport.set(self.exporttexts[3])
+            self.txtexport['fg'] = 'red'
             return
         rows = []
         for ix, g in enumerate(self.groupregister.groups):
@@ -206,6 +216,8 @@ class App(Tk):
         filename = filedialog.asksaveasfilename(filetypes=filetypes, defaultextension=defaultextension,
                                                 initialfile='Gruppemedlemmer.csv')
         if not filename:
+            self.strexport.set(self.exporttexts[4])
+            self.txtexport['fg'] = 'red'
             return
         rows = []
         for ix, g in enumerate(self.groupregister.groups):
@@ -240,7 +252,7 @@ class App(Tk):
         student = self.curstudent.gettuple()
         student = list(student)
         del (student[-1])
-        student[2] = student[2].replace(';', '\n').strip('\n')
+        student[progindex] = student[progindex].replace(';', '\n').strip('\n')
         for ix, s in enumerate(self.studentvariables):
             s.set(student[ix])
         self.txtmovestudent.set(self.fstrmovestudent % self.studentgroup.get())

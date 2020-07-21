@@ -10,7 +10,7 @@ class Group:
 
     def getmemberbyname(self, name):
         for m in self.members:
-            if m.name == name:
+            if m.name.lower() == name.lower():
                 return m
 
     def addmember(self, member):
@@ -41,12 +41,12 @@ class Group:
         return member in self.members
 
     def __str__(self):
-        s = 'Group{'
+        s = 'Group{ members: {'
         for m in self.members:
             s += m.name + ', '
-        s += 'hasprogrammer: %s, ' % self.prog
+        s += '}, hasprogrammer: %s, ' % self.prog
         s += 'worktime: %s' % self.time
-        s += '}'
+        s += ' }'
         return s
 
     def __len__(self):

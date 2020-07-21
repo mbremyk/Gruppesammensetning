@@ -13,10 +13,10 @@ def handlelistchange(evt):
     index = lst.curselection()[0]
     app.curstudent = app.groupregister.getstudentbyemail(lst.get(index).split('-')[-1].strip())
     app.updatestudentinfolabels()
-    if app.groupregister.getgroupindexbystudentemail(app.curstudent.email) >= 0:
+    if len(app.groupregister.groups) and app.groupregister.getgroupindexbystudentemail(app.curstudent.email) >= 0:
         tree = app.grouplists[app.groupregister.getgroupindexbystudentemail(app.curstudent.email)].tree
         for item in tree.get_children():
-            if tree.set(item, column='E-postadresse') == app.curstudent.email:
+            if tree.set(item, column='E-postadresse') == app.curstudent.email.lower():
                 tree.selection_set(item)
                 tree.focus(item)
                 break

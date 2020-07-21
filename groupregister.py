@@ -35,12 +35,12 @@ class GroupRegister:
 
     def getstudentbyname(self, name: str):
         for s in self.students:
-            if s.name == name:
+            if s.name.lower() == name.lower():
                 return s
 
     def getstudentbyemail(self, email: str):
         for s in self.students:
-            if s.email == email:
+            if s.email.lower() == email.lower():
                 return s
 
     def creategroups(self, resetgroups=False):
