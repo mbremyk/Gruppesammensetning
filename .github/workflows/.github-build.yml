@@ -39,6 +39,6 @@ jobs:
         pyinstaller --clean -yFw main.py -n Gruppesammensetning_mac.exe
     - name: push
       run: |
-        git add ./dist/Gruppesammensetning_mac.exe
+        git add ./dist/Gruppesammensetning_mac.exe -f
         git commit -m "New MacOS build"
         git push
