@@ -43,6 +43,11 @@ class GroupRegister:
             if s.email.lower() == email.lower():
                 return s
 
+    def getstudentbyusername(self, username: str):
+        for s in self.students:
+            if s.username.lower() == username.lower():
+                return s
+
     def creategroups(self, resetgroups=False):
         if resetgroups:
             self.groups = [Group(self.maxmembers) for x in range(ceil(len(self.students) / self.maxmembers))]
@@ -66,8 +71,14 @@ class GroupRegister:
         self.__removeemptygroups()
         self.__updatepartners()
 
-    def updatestudent(self, email, student):
-        self.students[self.students.index(self.getstudentbyemail(email))].update(student)
+    def updatestudent(self, student, email=None, username=None):
+        if email:
+            self.students[self.students.index(self.getstudentbyemail(email))].update(student)
+        elif username:
+            self.students[self.students.index(self.getstudentbyusername(email))].update(student)
+        else:
+            raise ValueError(
+                'Cannot find Student without identifying information. Both email and username cannot be None')
         self.__updatepartners()
         pass
 
@@ -141,7 +152,9 @@ class GroupRegister:
         for s in self.students:
             for p in s.strpartners:
                 partner = self.getstudentbyname(p)
-                if partner and s.name not in partner.strpartners:
+                if not partner:
+                    partner = self.getstudentbyusername(p)
+                if partner and s.name not in partner.strpartners and s.username not in partner.strpartners:
                     partner.strpartners.append(s.name)
 
     def __updatepartners(self):
@@ -149,8 +162,10 @@ class GroupRegister:
         for s in self.students:
             for p in s.strpartners:
                 partner = self.getstudentbyname(p)
+                if not partner:
+                    partner = self.getstudentbyusername(p)
                 if partner and partner not in s.partners:
-                    s.partners.append(self.getstudentbyname(p))
+                    s.partners.append(partner)
 
     def __fill(self, students: List[Student], checktime=True):
         for g in self.groups:

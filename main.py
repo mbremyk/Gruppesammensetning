@@ -41,7 +41,7 @@ def handlefilenamechange(filename):
             if not groupregister.getstudentbyemail(vals[3]):
                 groupregister += student
             else:
-                groupregister.updatestudent(vals[3], student)
+                groupregister.updatestudent(student, email=vals[3], username=vals[5])
 
 
 def createapp():

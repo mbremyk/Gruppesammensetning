@@ -16,7 +16,7 @@ progindex = 3
 
 
 class App(Tk):
-    def __init__(self, title='', geometry='', groupregister=None):
+    def __init__(self, title='', geometry='', groupregister=None, debug=False):
         super().__init__()
         if title:
             self.title(title)
@@ -32,6 +32,8 @@ class App(Tk):
         self.maxmembers.set(defaultmaxmembers)
         self.__setup()
         self.__config()
+        self.debug = debug
+        self.debugstr = StringVar()
 
     def __setup(self):
         lblfile = Label(self.frame, text='Fil: ')
@@ -75,7 +77,8 @@ class App(Tk):
         self.btnexportgroupmembers.grid(column=2, row=0, sticky='nw', padx=pad)
 
         self.strexport = StringVar()
-        self.exporttexts = ['', 'Grupper eksportert', 'Gruppemedlemmer eksportert', 'Kunne ikke eksportere grupper', 'Kunne ikke eksportere gruppemedlemmer']
+        self.exporttexts = ['', 'Grupper eksportert', 'Gruppemedlemmer eksportert', 'Kunne ikke eksportere grupper',
+                            'Kunne ikke eksportere gruppemedlemmer']
         self.strexport.set(self.exporttexts[0])
         self.txtexport = Label(btnframe, textvariable=self.strexport)
         self.txtexport.grid(column=10, row=0, sticky='ne', padx=pad)
@@ -161,6 +164,7 @@ class App(Tk):
         self.frame.grid(column=0, row=0, sticky='nsew', padx=2 * pad, pady=2 * pad)
         self.lststudentsframe.grid_columnconfigure(0, weight=1)
         self.lststudentsframe.grid_rowconfigure(0, weight=1)
+        self.bind_all('<F3>', self.__toggledebug)
 
     def __handleselectfile(self):
         self.filename.set(filedialog.askopenfilename(filetypes=(('Excel spreadsheet', '*.xlsx'), ('All files', '*.*'))))
@@ -251,6 +255,7 @@ class App(Tk):
             self.studentgroup.set(self.groupregister.getgroupindexbystudentemail(self.curstudent.email) + 1)
         student = self.curstudent.gettuple()
         student = list(student)
+        self.debugstr.set(str(self.curstudent.strpartners) + '\n\n' + str(self.curstudent.partners))
         del (student[-1])
         student[progindex] = student[progindex].replace(';', '\n').strip('\n')
         for ix, s in enumerate(self.studentvariables):
@@ -274,3 +279,13 @@ class App(Tk):
             self.groupregister.movestudent(self.curstudent,
                                            self.groupregister.groups[int(self.spinstudentgroup.get()) - 1], True)
         pass
+
+    def __toggledebug(self, event):
+        self.debug = not self.debug
+        self.debugstr.set('Debug. Press F3 to close')
+        if self.debug:
+            self.txtdebug = Label(self.frame, textvariable=self.debugstr)
+            self.txtdebug.grid(column=0, row=100, columnspan=100, sticky='nsew')
+        else:
+            if self.txtdebug:
+                self.txtdebug.grid_forget()
