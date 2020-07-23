@@ -52,7 +52,7 @@ jobs:
       - name: zip
         uses: montudor/action-zip@v0.1.0
         with:
-          args: zip -qq -r ./dist/Gruppesammensetning_mac.zip ./Gruppesammensetning_mac.app
+          args: zip -qq -r ./dist/Gruppesammensetning_mac.zip . -i ./Gruppesammensetning_mac.app
       - name: push
         run: |
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
