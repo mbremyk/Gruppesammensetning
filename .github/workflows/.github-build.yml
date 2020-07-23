@@ -37,6 +37,18 @@ jobs:
       - name: build
         run: |
           pyinstaller --clean -yFw main.py -n Gruppesammensetning_mac
+      - name: push
+        run: |
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git add ./dist/Gruppesammensetning_mac ./dist/Gruppesammensetning_mac.app ./dist/Gruppesammensetning_mac.zip -f
+          git commit -m "New MacOS build"
+          git push
+
+  zip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
       - name: zip
         uses: montudor/action-zip@v0.1.0
         with:
