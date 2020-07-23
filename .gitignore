@@ -4,7 +4,7 @@
 *.iml
 *.xml
 build/
-dist/
+dist/main
 *.spec
 *.exe
 venv/

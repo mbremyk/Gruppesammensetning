@@ -1,0 +1,15 @@
+[X] Remove case sensitivity
+[X] Oppdatere på brukernavn/email
+[/] Fullt navn eller brukernavn
+[ ] Grupper/Gruppemedlemmer eksportert -
+    [ ] Blå, tjukk tekst
+    [X] Rød hvis feil?
+    [ ] Fjern tekst ved endring
+[ ] Dokumentasjon
+[ ] README skriv om .exe til nedlasting
+[ ] Beskrivelse av programmet
+[ ] Legge til bilder i README
+[ ] Ett bilde med forklaringer til knappene
+[X] Legg inn en ekstra strpartners
+[X] Labels - brukernavn
+[?] Bygge for Mac
