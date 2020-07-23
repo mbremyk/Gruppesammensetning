@@ -38,7 +38,7 @@ jobs:
         run: |
           pyinstaller --clean -yFw main.py -n Gruppesammensetning_mac
       - name: zip
-        uses: montudor montudor/action-zip@v0.1.0
+        uses: montudor/action-zip@v0.1.0
         with:
           args: zip -qq -r ./dist/Gruppesammensetning_mac.zip ./Gruppesammensetning_mac.app
       - name: push
