@@ -6,7 +6,7 @@ Dette er et program for sammensetning av grupper til faget INFT1003 Webteknologi
 #### 1. Last ned .exe-filen
 Last ned den relevante filen for ditt system, og lagre den på et fornuftig sted:
 * Windows: [Gruppesammensetning_win.exe](./dist/Gruppesammensetning_win.exe)
-* Mac: [Gruppesammensetning_mac.app](./dist/Gruppesammensetning_mac.app)
+* ~~Mac: Fungerer ikke.~~  [Gruppesammensetning_mac.app](./dist/Gruppesammensetning_mac.zip)
 
 #### 2. Generer et Excel-ark med data
 For å kunne generere grupper, trenger du et regneark på formatet:
