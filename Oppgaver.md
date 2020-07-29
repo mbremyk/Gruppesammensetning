@@ -17,3 +17,7 @@
 - [ ] Bygge for Mac  
     - [X] Gjøre et ærlig forsøk
     - [ ] Få det til
+- [ ] Eksport
+    - [ ] Bedre feilmeldinger
+        - [ ] Separert på feil og avbrutt
+        - [X] "Eksport ble avbrutt" istedenfor "Kunne ikke eksportere"

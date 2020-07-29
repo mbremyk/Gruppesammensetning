@@ -123,8 +123,8 @@ class App(Tk):
         self.btnexportgroupmembers.grid(column=2, row=0, sticky='nw', padx=pad)
 
         self.strexport = StringVar()
-        self.exporttexts = ['', 'Grupper eksportert', 'Gruppemedlemmer eksportert', 'Kunne ikke eksportere grupper',
-                            'Kunne ikke eksportere gruppemedlemmer', 'Siste endringer er ikke eksportert']
+        self.exporttexts = ['', 'Grupper eksportert', 'Gruppemedlemmer eksportert', 'Eksport av grupper ble avbrutt',
+                            'Eksport av gruppemedlemmer ble avbrutt', 'Siste endringer er ikke eksportert']
         self.strexport.set(self.exporttexts[0])
         self.txtexport = Label(btnframe, textvariable=self.strexport, font='TkDefaultFont 9 bold')
         self.txtexport.grid(column=10, row=0, sticky='se', padx=pad)
