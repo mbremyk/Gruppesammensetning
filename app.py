@@ -16,7 +16,31 @@ progindex = 3
 
 
 class App(Tk):
-    def __init__(self, title='', geometry='', groupregister=None, debug=False):
+    """
+    A class representing the tk app that handles all GUI related stuff
+
+    Attributes
+    ----------
+    frame : Frame
+        Contains all GUI elements of the app
+    title : str
+        The title of the app, appears in the top bar of the window
+    geometry : str
+        String matching /[1-9][0-9]*x[1-9][0-9]*/ representing the shape of the window
+    debug : bool
+        Sets whether the debug parts of the window are shown. Cant be toggled with F3
+    """
+
+    def __init__(self, title='', geometry='', debug=False):
+        """
+        :param title: The title of the app, appears in the top bar of the window
+        :type title: str
+        :param geometry: String matching /[1-9][0-9]*x[1-9][0-9]*/ representing the shape of the window
+        :type geometry: str
+        :param debug: Sets whether the debug parts of the window are shown. Cant be toggled with F3
+        :type debug: bool
+        """
+
         super().__init__()
         if title:
             self.title(title)
@@ -26,7 +50,6 @@ class App(Tk):
         self.numstudents = IntVar()
         self.numstudents.set(0)
         self.filename = StringVar()
-        self.groupregister = groupregister
         self.curstudent = None
         self.maxmembers = IntVar()
         self.maxmembers.set(defaultmaxmembers)
@@ -36,6 +59,17 @@ class App(Tk):
         self.debugstr = StringVar()
 
     def __setup(self):
+        """
+        Sets up all the static GUI elements of the app
+        Should probably be separated into different methods
+
+        :return: None
+        :rtype: None
+        """
+
+        #
+        #           Filename
+        #
         lblfile = Label(self.frame, text='Fil: ')
         lblfile.grid(column=0, row=0, sticky='nw')
 
@@ -45,21 +79,33 @@ class App(Tk):
         btnselectfile = Button(self.frame, text='Velg fil', command=self.__handleselectfile)
         btnselectfile.grid(column=2, row=0, sticky='nw')
 
+        #
+        #           Max members
+        #
         lblmaxmembers = Label(self.frame, text='Maks medlemmer per gruppe: ')
         lblmaxmembers.grid(column=0, row=1, sticky='nw')
 
         self.spinmaxmembers = Spinbox(self.frame, from_=2, to=10, textvariable=self.maxmembers)
         self.spinmaxmembers.grid(column=1, row=1, sticky='nw')
 
+        #
+        #           Number of students
+        #
         lblnumstudents = Label(self.frame, text='Antall studenter: ')
         lblnumstudents.grid(column=0, row=2, sticky='nw')
 
         txtnumstudents = Label(self.frame, textvariable=self.numstudents)
         txtnumstudents.grid(column=1, row=2, sticky='nw')
 
+        #
+        #           All students label
+        #
         lblallstudents = Label(self.frame, text='Alle studenter')
         lblallstudents.grid(column=0, row=3, sticky='nw')
 
+        #
+        #           Buttons related to creating and exporting groups
+        #
         btnframe = Frame(self.frame)
         btnframe.grid(column=1, row=3, columnspan=2, sticky='nsew')
 
@@ -78,11 +124,14 @@ class App(Tk):
 
         self.strexport = StringVar()
         self.exporttexts = ['', 'Grupper eksportert', 'Gruppemedlemmer eksportert', 'Kunne ikke eksportere grupper',
-                            'Kunne ikke eksportere gruppemedlemmer']
+                            'Kunne ikke eksportere gruppemedlemmer', 'Siste endringer er ikke eksportert']
         self.strexport.set(self.exporttexts[0])
-        self.txtexport = Label(btnframe, textvariable=self.strexport)
-        self.txtexport.grid(column=10, row=0, sticky='ne', padx=pad)
+        self.txtexport = Label(btnframe, textvariable=self.strexport, font='TkDefaultFont 9 bold')
+        self.txtexport.grid(column=10, row=0, sticky='se', padx=pad)
 
+        #
+        #           Scrollable list of students
+        #
         self.lststudentsframe = Frame(self.frame)
         self.lststudentsframe.grid(column=0, row=10, sticky='nsew')
 
@@ -93,7 +142,11 @@ class App(Tk):
         self.lststudents.pack(fill=BOTH, expand=1)
         self.lststudents.config(yscrollcommand=lststudentsscroll.set)
         lststudentsscroll.config(command=self.lststudents.yview)
+        self.lststudents.bind('<<ListboxSelect>>', self.__handlelistchange)
 
+        #
+        #           Scrollable list of groups
+        #
         groupframe = Frame(self.frame)
         groupframe.grid(column=1, row=10, columnspan=2, rowspan=2, sticky='nsew')
 
@@ -120,6 +173,9 @@ class App(Tk):
             )
         )
 
+        #
+        #           Information about selected student
+        #
         self.studentvariables = [StringVar(), StringVar(), StringVar(), StringVar(), StringVar()]
         for s in self.studentvariables:
             s.set('')
@@ -128,7 +184,7 @@ class App(Tk):
         self.studentgroup = IntVar()
         self.studentgroup.set(0)
 
-        self.studentgroup.trace('w', self.handlespin)
+        self.studentgroup.trace('w', self.__handlespin)
 
         labeltexts = ['Navn: ', 'Email: ', 'Brukernavn', 'Prog. erfaring: \n', 'Arbeidstid: ']
         labels = []
@@ -147,14 +203,24 @@ class App(Tk):
         self.spinstudentgroup.grid(column=1, row=len(labels), sticky='nw')
         studentinfoframe.grid(column=0, row=11, sticky='nsew')
 
+        #
+        #           Button for moving a student
+        #
         self.txtmovestudent = StringVar()
         self.fstrmovestudent = 'Flytt til gruppe %d'
         self.txtmovestudent.set(self.fstrmovestudent % self.studentgroup.get())
-        self.btnmovestudent = Button(studentinfoframe, textvariable=self.txtmovestudent, command=self.handlemovestudent,
+        self.btnmovestudent = Button(studentinfoframe, textvariable=self.txtmovestudent,
+                                     command=self.__handlemovestudent,
                                      state='disabled')
         self.btnmovestudent.grid(column=0, row=len(labels) + 1, sticky='nsew')
 
     def __config(self):
+        """
+        A method to separate the top level configurations from all the visible elements of the GUI
+
+        :return: None
+        :rtype: None
+        """
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
         self.frame.grid_columnconfigure(0, weight=0)
@@ -167,6 +233,15 @@ class App(Tk):
         self.bind_all('<F3>', self.__toggledebug)
 
     def __handleselectfile(self):
+        """
+        Event handler method for self.btnselectfile
+
+        Prompts the user for a file
+        The event handler of self.filename is called when self.filename changes
+        Updates some values based on result of main.handlefilenamechange
+
+        :return: None
+        """
         self.filename.set(filedialog.askopenfilename(filetypes=(('Excel spreadsheet', '*.xlsx'), ('All files', '*.*'))))
         # Call to main.handlefilenamechange() here
         if self.filename.get():
@@ -181,6 +256,16 @@ class App(Tk):
             self.numstudents.set(0)
 
     def __handlecreategroups(self):
+        """
+        Event handler method for self.btncreategroups
+
+        Calls self.groupregister.creategroups and builds tables of the result in self.grouplistframe
+
+        :return: None
+        :rtype: None
+        """
+        self.strexport.set(self.exporttexts[5])
+        self.txtexport['fg'] = 'blue'
         self.groupregister.maxmembers = self.maxmembers.get()
         self.groupregister.creategroups(True)
         self.grouplists = []
@@ -191,7 +276,7 @@ class App(Tk):
         for ix, g in enumerate(self.groupregister.groups):
             self.grouplists.append(
                 MultiColumnTreeView(self.grouplistframe, self.headers, g.membertuples(), 'Gruppe %s' % (ix + 1)))
-            self.grouplists[-1].tree.bind('<<TreeviewSelect>>', self.handletreeselect)
+            self.grouplists[-1].tree.bind('<<TreeviewSelect>>', self.__handletreeselect)
         for gl in self.grouplists:
             gl.pack(fill=X, expand=True)
         self.spinstudentgroup.config(from_=1, to=len(self.groupregister.groups))
@@ -201,6 +286,14 @@ class App(Tk):
         self.btnexportgroupmembers['state'] = 'normal'
 
     def __exportgroups(self):
+        """
+        Event handler method for self.btnexportgroups
+
+        Prompts the user for a location and a filename and saves a list of groups formatted for import into BlackBoard
+
+
+        :return:
+        """
         filename = filedialog.asksaveasfilename(filetypes=filetypes, defaultextension=defaultextension,
                                                 initialfile='Grupper.csv')
         if not filename:
@@ -214,6 +307,8 @@ class App(Tk):
         file = open(filename, 'w', newline='')
         writer = csv.writer(file, quoting=csv.QUOTE_ALL)
         writer.writerows(rows)
+        self.strexport.set(self.exporttexts[1])
+        self.txtexport['fg'] = 'green'
         pass
 
     def __exportgroupmembers(self):
@@ -233,9 +328,11 @@ class App(Tk):
         file = open(filename, 'w', newline='')
         writer = csv.writer(file, quoting=csv.QUOTE_ALL)
         writer.writerows(rows)
+        self.strexport.set(self.exporttexts[2])
+        self.txtexport['fg'] = 'green'
         pass
 
-    def handletreeselect(self, evt):
+    def __handletreeselect(self, evt):
         tree = evt.widget
         if tree.selection():
             name = tree.set(tree.selection()[0], column='Navn')
@@ -244,13 +341,13 @@ class App(Tk):
             self.lststudents.select_set(self.lststudents.get(0, END).index(name + ' - ' + email))
             self.curstudent = self.groupregister.getstudentbyemail(
                 self.lststudents.get(self.lststudents.curselection()[0]).split('-')[-1].strip())
-            self.updatestudentinfolabels()
+            self.__updatestudentinfolabels()
             for gl in tree.master.master.winfo_children():
                 if isinstance(gl, MultiColumnTreeView) and gl.tree is not tree:
                     gl.tree.selection_set()
         pass
 
-    def updatestudentinfolabels(self):
+    def __updatestudentinfolabels(self):
         if len(self.groupregister.groups):
             self.studentgroup.set(self.groupregister.getgroupindexbystudentemail(self.curstudent.email) + 1)
         student = self.curstudent.gettuple()
@@ -262,15 +359,17 @@ class App(Tk):
             s.set(student[ix])
         self.txtmovestudent.set(self.fstrmovestudent % self.studentgroup.get())
 
-    def handlespin(self, var, blank, mode):
+    def __handlespin(self, var, blank, mode):
         self.txtmovestudent.set(self.fstrmovestudent % self.studentgroup.get())
         if self.curstudent and self.groupregister.getgroupindexbystudentemail(
-                self.curstudent.email) is not self.studentgroup.get():
+                self.curstudent.email) != self.studentgroup.get() - 1:
             self.btnmovestudent['state'] = 'normal'
         else:
             self.btnmovestudent['state'] = 'disabled'
 
-    def handlemovestudent(self):
+    def __handlemovestudent(self):
+        self.strexport.set(self.exporttexts[5])
+        self.txtexport['fg'] = 'blue'
         if self.curstudent:
             tree = self.grouplists[self.groupregister.getgroupindexbystudentemail(self.curstudent.email)].tree
             tree.delete(tree.selection())
@@ -289,3 +388,19 @@ class App(Tk):
         else:
             if self.txtdebug:
                 self.txtdebug.grid_forget()
+
+    def __handlelistchange(self, evt):
+        lst = evt.widget
+        if not lst.curselection():
+            return
+        index = lst.curselection()[0]
+        self.curstudent = self.groupregister.getstudentbyemail(lst.get(index).split('-')[-1].strip())
+        self.__updatestudentinfolabels()
+        if len(self.groupregister.groups) and self.groupregister.getgroupindexbystudentemail(
+                self.curstudent.email) >= 0:
+            tree = self.grouplists[self.groupregister.getgroupindexbystudentemail(self.curstudent.email)].tree
+            for item in tree.get_children():
+                if tree.set(item, column='E-postadresse') == self.curstudent.email.lower():
+                    tree.selection_set(item)
+                    tree.focus(item)
+                    break

@@ -1,0 +1,19 @@
+- [X] Remove case sensitivity  
+- [X] Oppdatere på brukernavn/email  
+- [ ] Fullt navn eller brukernavn 
+    - [X] Endring i kode
+    - [ ] Endring i skjema 
+- [X] Grupper/Gruppemedlemmer eksportert -  
+    - [X] Grønn tekst ved suksess  
+    - [X] Rød hvis feil  
+    - [X] Blå tekst ved ulagrede endringer  
+- [ ] Dokumentasjon  
+- [X] README skriv om .exe til nedlasting  
+- [ ] Beskrivelse av programmet  
+- [ ] Legge til bilder i README  
+- [ ] Ett bilde med forklaringer til knappene  
+- [X] Legg inn en ekstra strpartners  
+- [X] Labels - brukernavn  
+- [ ] Bygge for Mac  
+    - [X] Gjøre et ærlig forsøk
+    - [ ] Få det til
