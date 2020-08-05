@@ -5,12 +5,32 @@ from typing import List
 
 
 class GroupRegister:
+    """
+    A class representing a list of Groups and Students, with methods for working with those
+
+    Attributes
+    ---------
+    groups : list
+        list of Group objects
+    students : list
+        list of Student objects
+    maxmembers : int
+        used for setting maximum amount of members in Groups in this GroupRegister when they are created
+    """
     def __init__(self, maxmembers: int):
+        """
+        :param maxmembers: int
+        """
         self.groups = []
         self.students = []
         self.maxmembers = maxmembers
 
     def __iadd__(self, other: object):
+        """
+        :param other: Object of type GroupRegister, Group, Student, list of Groups or list of Students
+        :return self: App
+        :raises TypeError: if other is not of suitable type, see param other
+        """
         if isinstance(other, GroupRegister):
             self.groups += other.groups
         elif isinstance(other, Group):
@@ -19,8 +39,10 @@ class GroupRegister:
             self.addstudent(other)
         elif isinstance(other, list) and all(isinstance(g, Group) for g in other):
             self.groups += other
+            self.groups = list(set(self.groups))
         elif isinstance(other, list) and all(isinstance(s, Student) for s in other):
             self.students += other
+            self.students = list(set(self.students))
         else:
             raise TypeError(
                 'Cannot add non-GroupRegister, -Group, or -Student type object to object of type GroupRegister')
@@ -28,6 +50,13 @@ class GroupRegister:
         return self
 
     def addstudent(self, student: Student):
+        """
+        Adds a student to this GroupRegister's list of students and updates all Student's list of partners
+
+        :param student: The student to add
+        :return: None
+        :raises ValueError: if student is already in self.students
+        """
         if student in self.students:
             raise ValueError('Student already in register')
         self.students.append(student)
@@ -90,6 +119,11 @@ class GroupRegister:
     def getgroupindexbystudentemail(self, email):
         for g in self.groups:
             if g.hasmember(self.getstudentbyemail(email)):
+                return self.groups.index(g)
+
+    def getgroupindexbystudentusername(self, username):
+        for g in self.groups:
+            if g.hasmember(self.getstudentbyusername(username)):
                 return self.groups.index(g)
 
     def __shrinkgroups(self):

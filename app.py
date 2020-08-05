@@ -248,7 +248,7 @@ class App(Tk):
             self.numstudents.set(len(self.groupregister.students))
             self.lststudents.delete(0, END)
             for s in self.groupregister.students:
-                self.lststudents.insert(END, s.name + ' - ' + s.email)
+                self.lststudents.insert(END, s.name + ' - ' + s.username)
             self.btncreategroups['state'] = 'normal'
         else:
             self.btncreategroups['state'] = 'disabled'
@@ -290,9 +290,9 @@ class App(Tk):
         Event handler method for self.btnexportgroups
 
         Prompts the user for a location and a filename and saves a list of groups formatted for import into BlackBoard
+        Most of the fields are empty, but could be filled if needed
 
-
-        :return:
+        :return: None
         """
         filename = filedialog.asksaveasfilename(filetypes=filetypes, defaultextension=defaultextension,
                                                 initialfile='Grupper.csv')
@@ -312,6 +312,14 @@ class App(Tk):
         pass
 
     def __exportgroupmembers(self):
+        """
+        Event handler method for self.btnexportgroups
+
+        Prompts the user for a location and a filename and saves a list of group members formatted for import into BlackBoard
+
+        :return: None
+        """
+
         filename = filedialog.asksaveasfilename(filetypes=filetypes, defaultextension=defaultextension,
                                                 initialfile='Gruppemedlemmer.csv')
         if not filename:
@@ -333,13 +341,22 @@ class App(Tk):
         pass
 
     def __handletreeselect(self, evt):
+        """
+        Event handler for user clicks in the groups lists
+
+        Fetches information about the selected student, removes any selection from the other groups, and sets the
+        appropriate selection in the student list
+
+        :param evt: Event object for the TreeView selection
+        :return: None
+        """
         tree = evt.widget
         if tree.selection():
             name = tree.set(tree.selection()[0], column='Navn')
-            email = tree.set(tree.selection()[0], column='E-postadresse')
+            username = tree.set(tree.selection()[0], column='Brukernavn')
             self.lststudents.select_clear(0, END)
-            self.lststudents.select_set(self.lststudents.get(0, END).index(name + ' - ' + email))
-            self.curstudent = self.groupregister.getstudentbyemail(
+            self.lststudents.select_set(self.lststudents.get(0, END).index(name + ' - ' + username))
+            self.curstudent = self.groupregister.getstudentbyusername(
                 self.lststudents.get(self.lststudents.curselection()[0]).split('-')[-1].strip())
             self.__updatestudentinfolabels()
             for gl in tree.master.master.winfo_children():
@@ -348,8 +365,13 @@ class App(Tk):
         pass
 
     def __updatestudentinfolabels(self):
+        """
+        Method for updating the labels with info on the currentlyg selected student
+
+        :return: None
+        """
         if len(self.groupregister.groups):
-            self.studentgroup.set(self.groupregister.getgroupindexbystudentemail(self.curstudent.email) + 1)
+            self.studentgroup.set(self.groupregister.getgroupindexbystudentusername(self.curstudent.username) + 1)
         student = self.curstudent.gettuple()
         student = list(student)
         self.debugstr.set(str(self.curstudent.strpartners) + '\n\n' + str(self.curstudent.partners))
@@ -360,6 +382,16 @@ class App(Tk):
         self.txtmovestudent.set(self.fstrmovestudent % self.studentgroup.get())
 
     def __handlespin(self, var, blank, mode):
+        """
+        Event handler method for the spinbox representing the students group
+
+        Updates the button for moving students to the appropriate number
+
+        :param var: Variable from trace. Not used
+        :param blank: Variable from trace. Not used
+        :param mode: Variable from trace. Not used
+        :return: None
+        """
         self.txtmovestudent.set(self.fstrmovestudent % self.studentgroup.get())
         if self.curstudent and self.groupregister.getgroupindexbystudentemail(
                 self.curstudent.email) != self.studentgroup.get() - 1:
@@ -368,6 +400,14 @@ class App(Tk):
             self.btnmovestudent['state'] = 'disabled'
 
     def __handlemovestudent(self):
+        """
+        Event handler method for the button for moving a student
+
+        Removes the student information from the old group view and adds it to the new group view.
+        Moves the student with GroupRegister.movestudent
+
+        :return: None
+        """
         self.strexport.set(self.exporttexts[5])
         self.txtexport['fg'] = 'blue'
         if self.curstudent:
@@ -380,6 +420,12 @@ class App(Tk):
         pass
 
     def __toggledebug(self, event):
+        """
+        Toggles the debug view
+
+        :param event: Keypress event for the F3 key
+        :return: None
+        """
         self.debug = not self.debug
         self.debugstr.set('Debug. Press F3 to close')
         if self.debug:
@@ -390,17 +436,25 @@ class App(Tk):
                 self.txtdebug.grid_forget()
 
     def __handlelistchange(self, evt):
+        """
+        Event handler method for clicks in the student list
+
+        Fetches information about the selected student and updates the labels and TreeView selection of groups
+
+        :param evt: Event object for the ListboxSelect event
+        :return: None
+        """
         lst = evt.widget
         if not lst.curselection():
             return
         index = lst.curselection()[0]
-        self.curstudent = self.groupregister.getstudentbyemail(lst.get(index).split('-')[-1].strip())
+        self.curstudent = self.groupregister.getstudentbyusername(lst.get(index).split('-')[-1].strip())
         self.__updatestudentinfolabels()
         if len(self.groupregister.groups) and self.groupregister.getgroupindexbystudentemail(
                 self.curstudent.email) >= 0:
-            tree = self.grouplists[self.groupregister.getgroupindexbystudentemail(self.curstudent.email)].tree
+            tree = self.grouplists[self.groupregister.getgroupindexbystudentusername(self.curstudent.username)].tree
             for item in tree.get_children():
-                if tree.set(item, column='E-postadresse') == self.curstudent.email.lower():
+                if tree.set(item, column='Brukernavn').lower() == self.curstudent.username.lower():
                     tree.selection_set(item)
                     tree.focus(item)
                     break
