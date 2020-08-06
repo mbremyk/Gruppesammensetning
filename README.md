@@ -1,15 +1,16 @@
 # Gruppesammensetning
   
-Dette er et program for sammensetning av grupper til faget INFT1003 Webteknologi og Teamarbeid ved NTNU. 
+Dette er et program for sammensetning av grupper til faget INFT1003 Webteknologi og Teamarbeid ved NTNU.  
 Programmet tar et regneark med data om studentene, og et forslag til grupper, basert på at alle studentene skal få jobbe med sine ønskede samarbeidspartnere, at alle gruppene skal ha medlemmer med noe programmeringserfaring, og at så mange som mulig på gruppa kan jobbe på samme tid på dagen
 
 ## Innholdsfortegnelse
-1. [Gruppesammensetning (topp)](#gruppesammensetning)
-1. [Innholdsfortegnelse](#innholdsfortegnelse)
-1. [Oversiktsbilde](#oversiktsbilde)
+- [Gruppesammensetning (topp)](#gruppesammensetning)
+- [Innholdsfortegnelse](#innholdsfortegnelse)
+- [Nedlasting](#nedlasting)
+- [Oversiktsbilde](#oversiktsbilde)
     1. [Bilde](#oversiktbilde)
     1. [Forklaring](#forklaring)
-1. [Bruksanvisning](#bruksanvisning)
+- [Bruksanvisning](#bruksanvisning)
     1. [Last ned programmet](#1-last-ned-programmet)
     1. [Generer et Excel-ark med data](#2-generer-et-excel-ark-med-data)
     1. [Åpne programmet](#3-pne-programmet)
@@ -18,17 +19,26 @@ Programmet tar et regneark med data om studentene, og et forslag til grupper, ba
     1. [Flytte studenter](#6-flytte-studenter)
     1. [Eksportere grupper og gruppemedlemmer](#7-eksportere-grupper-og-gruppemedlemmer)
     1. [Importér grupper og gruppemedlemmer i BlackBoard](#8-importr-grupper-og-gruppemedlemmer-i-blackboard)
-1. [Support](#support)
+- [Support](#support)
+
+## Nedlasting
+- Windows: [Gruppesammensetning_win.exe](./dist/Gruppesammensetning_win.exe)
+- ~~Mac: Fungerer ikke.~~  [Gruppesammensetning_mac.app](./dist/Gruppesammensetning_mac.zip)  
+    Midlertidig løsning (med python 3 innstallert): 
+    - Klon prosjektet med `git clone`
+    - Naviger til toppnivået i prosjektmappen med `cd <prosjektnavn>` (idi-project1 eller Gruppesammensetning)
+    - Kjør programmet med `python main.py`
    
 ## Oversiktbilde
 ![Nummerert oversiktsbilde](Gruppesammensetning.png "Nummerert oversiktsbilde")
 #### Forklaring
-1. <ins>Filnavn til valgte fil</ins>
+1. <ins>Filnavn til valgte import-fil</ins>
 1. <ins>_Velg fil_-knapp</ins>  
-    Trykk på denne for å velge en ny fil. Overskriver tidligere liste med studenter
+    Trykk på denne for å velge en ny import-fil med informasjon om studenter. Overskriver tidligere liste med studenter.  
+    Filtypen må være .xlsx, .xlsm, .xltx eller .xltm. Programmet er kun testet med .xlsx, men skal fungere om dokumentet er riktig formatert
 1. <ins>Maksimum antall medlemmer i hver gruppe</ins>  
     Leses av programmet når knapp (5) - _Opprett grupper_ blir trykket på. Tallet bestemmer hvor mange studenter algoritmen lar det være i hver gruppe
-1. <ins>Antall studenter funnet i den valgte filen</ins>
+1. <ins>Antall studenter funnet i den valgte import-filen</ins>
 1. <ins>_Opprett grupper_-knapp</ins>  
     Oppretter et forslag til gruppesammensetning basert på ønskede samarbeidspartnere, programmeringserfaring og ønsket arbeidstid  
     Kun aktivert når en fil er valgt
@@ -56,7 +66,7 @@ Programmet tar et regneark med data om studentene, og et forslag til grupper, ba
 1. <ins>Liste over studenter funnet i valgte fil</ins>  
     Hver linje i listen kan velges for å få mer informasjon om studenten i informasjonsfelt (10) og (11)
 1. <ins>Informasjon om studenten</ins>  
-    Her listes informasjonen hentet fra regnearket opp
+    Her listes informasjonen hentet fra regnearket om den valgte studenten opp
 1. <ins>Valgte students gruppemedlemskap</ins>  
     Når en student velges i listen (9) viser dette feltet hvilken gruppe studenten tilhører.  
     Ved å endre dette tallet, og deretter trykke på _Flytt_-knappen (12), kan du flytte en student til en annen gruppe
@@ -71,7 +81,8 @@ Programmet tar et regneark med data om studentene, og et forslag til grupper, ba
 #### 1. Last ned programmet
 Last ned den relevante filen for ditt system, og lagre den på et fornuftig sted:
 * Windows: [Gruppesammensetning_win.exe](./dist/Gruppesammensetning_win.exe)
-* ~~Mac: Fungerer ikke.~~  [Gruppesammensetning_mac.app](./dist/Gruppesammensetning_mac.zip)
+* ~~Mac: Fungerer ikke.~~  [Gruppesammensetning_mac.app](./dist/Gruppesammensetning_mac.zip)  
+    Midlertidig løsning: innstaller python 3, klon prosjektet og kjør `python main.py` i kommandolinja
 
 #### 2. Generer et Excel-ark med data
 For å kunne generere grupper, trenger du et regneark på formatet:
@@ -90,11 +101,13 @@ Den kan genereres ved å la studentene svare på [dette spørreskjemaet](https:/
 Du vil nå få en kopi av skjemaet koblet til din Microsoft-konto
 3. Endre navn og beskrivelse på skjemaet om nødvendig.  
 **NB - Ikke endre på svaralternativene eller rekkefølgen på spørsmålene. Da vil ikke programmet fungere**
-4. Klikk på _Del_, kopiér linken under _Send og samle inn svar_, og send til studentene. Pass på at **<ins>alle</ins>** studentene svarer på undersøkelsen
-5. Etter at alle studentene har svart trykker du på _Svar_ og _Åpne i Excel_. Da vil du laste ned en Excel-fil du kan bruke i programmet
+4. Klikk på _Del_, kopiér linken under _Send og samle inn svar_, og send til studentene. Pass på at **<ins>alle</ins>** studentene svarer på undersøkelsen. Studenter som ikke svarer på undersøkelsen blir ikke tatt med i gruppeforslaget, og må legges inn manuelt i etterkant. 
+5. Etter at alle studentene har svart trykker du på _Svar_ og _Åpne i Excel_. Da vil du laste ned en Excel-fil du kan bruke i programmet. Det kan være en fordel å lagre filen i samme mappe som du har lagret programmet
 
 #### 3. Åpne programmet
-Finn fram til der du lagret [main.exe](./dist/Gruppesammensetning.exe) og dobbeltklikk på filen
+Finn fram til der du lagret [programfilen fra punkt 1](#1-last-ned-programmet) og start programmet
+- Windows: dobbeltklikk eller høyreklikk -> _Åpne_
+- Mac: innstaller python 3 og kjør `python main.py` i kommandolinja
 
 #### 4. Importer dataene fra steg 2
 Klikk på knappen _Velg fil_  
@@ -121,10 +134,11 @@ Trykk på _Importer_
 Under _IMPORTER GRUPPEMEDLEMMER_ trykker du på _Bla gjennom min datamaskin_, navigerer til der du lagret de eksporterte filene, og velger filen som inneholder Gruppemedlemmene, standard navn er _Gruppemedlemmer.csv_  
 Under _IMPORTER GRUPPER_ gjør du det samme, men velger filen med gruppene istedenfor, standard navn er _Grupper.csv_  
 Velg hvilke verktøy gruppene skal ha tilgang til, og trykk _Send_  
-BlackBoard er litt tregt, så om du ikke ser gruppene med én gang skal det bare være å vente litt og så laste inn siden på nytt med F5 eller Ctrl+R  
-Hvis du ikke har endret innstillingene dine for mailing i BlackBoard skal du også få en mail når gruppene er importert
+BlackBoard er litt tregt, så om du ikke ser gruppene med én gang skal det bare være å vente noen minutter og så laste inn siden på nytt med F5 eller Ctrl/Cmd+R  
+Hvis du ikke har endret innstillingene dine for mailing i BlackBoard skal du også få en mail når gruppene er importert  
+Om du ikke ser gruppene når du har fått mail om at de har blitt importert, har det skjedd en feil. Dette kan være et problem hos BlackBoard, men ta gjerne kontakt med [support](#support), og om mulig legg ved filene generert under bruk (Excel-fil og .csv-filer).
 
-Nå skal gruppene være importert i BlackBoard. Sjekk om alle studentene er i en gruppe, og legg inn de som mangler
+Nå skal gruppene være importert i BlackBoard. Sjekk om alle studentene er i en gruppe, og legg inn de som mangler på vanlig måte
 
 
 ### Support
