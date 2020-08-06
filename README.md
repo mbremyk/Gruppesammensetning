@@ -1,9 +1,24 @@
 # Gruppesammensetning
+  
+Dette er et program for sammensetning av grupper til faget INFT1003 Webteknologi og Teamarbeid ved NTNU. 
+Programmet tar et regneark med data om studentene, og et forslag til grupper, basert på at alle studentene skal få jobbe med sine ønskede samarbeidspartnere, at alle gruppene skal ha medlemmer med noe programmeringserfaring, og at så mange som mulig på gruppa kan jobbe på samme tid på dagen
 
-Dette er et program for sammensetning av grupper til faget INFT1003 Webteknologi og teamarbeid ved NTNU
-
+## Innholdsfortegnelse
+1. [Gruppesammensetning](#gruppesammensetning)
+2. [Innholdsfortegnelse](#innholdsfortegnelse)
+3. [Bruksanvisning](#bruksanvisning)
+    1. [Last ned programmet](#1-last-ned-programmet)
+    2. [Generer et Excel-ark med data](#2-generer-et-excel-ark-med-data)
+    3. [Åpne programmet](#3-pne-programmet)
+    4. [Importer dataene fra steg 2](#4-importer-dataene-fra-steg-2)
+    5. [Opprett grupper](#5-opprett-grupper)
+    6. [Flytte studenter](#6-flytte-studenter)
+    7. [Eksportere grupper og gruppemedlemmer](#7-eksportere-grupper-og-gruppemedlemmer)
+    8. [Importér grupper og gruppemedlemmer i BlackBoard](#8-importr-grupper-og-gruppemedlemmer-i-blackboard)
+4. [Support](#support)
+    
 ## Bruksanvisning
-#### 1. Last ned .exe-filen
+#### 1. Last ned programmet
 Last ned den relevante filen for ditt system, og lagre den på et fornuftig sted:
 * Windows: [Gruppesammensetning_win.exe](./dist/Gruppesammensetning_win.exe)
 * ~~Mac: Fungerer ikke.~~  [Gruppesammensetning_mac.app](./dist/Gruppesammensetning_mac.zip)
