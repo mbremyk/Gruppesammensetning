@@ -21,3 +21,6 @@
     - [ ] Bedre feilmeldinger
         - [ ] Separert på feil og avbrutt
         - [X] "Eksport ble avbrutt" istedenfor "Kunne ikke eksportere"
+    - [ ] Én knapp for eksport
+    - [ ] Input for filnavn
+- [ ] Velge navn på gruppesett

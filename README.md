@@ -4,18 +4,68 @@ Dette er et program for sammensetning av grupper til faget INFT1003 Webteknologi
 Programmet tar et regneark med data om studentene, og et forslag til grupper, basert på at alle studentene skal få jobbe med sine ønskede samarbeidspartnere, at alle gruppene skal ha medlemmer med noe programmeringserfaring, og at så mange som mulig på gruppa kan jobbe på samme tid på dagen
 
 ## Innholdsfortegnelse
-1. [Gruppesammensetning](#gruppesammensetning)
-2. [Innholdsfortegnelse](#innholdsfortegnelse)
-3. [Bruksanvisning](#bruksanvisning)
+1. [Gruppesammensetning (topp)](#gruppesammensetning)
+1. [Innholdsfortegnelse](#innholdsfortegnelse)
+1. [Oversiktsbilde](#oversiktsbilde)
+    1. [Bilde](#oversiktbilde)
+    1. [Forklaring](#forklaring)
+1. [Bruksanvisning](#bruksanvisning)
     1. [Last ned programmet](#1-last-ned-programmet)
-    2. [Generer et Excel-ark med data](#2-generer-et-excel-ark-med-data)
-    3. [Åpne programmet](#3-pne-programmet)
-    4. [Importer dataene fra steg 2](#4-importer-dataene-fra-steg-2)
-    5. [Opprett grupper](#5-opprett-grupper)
-    6. [Flytte studenter](#6-flytte-studenter)
-    7. [Eksportere grupper og gruppemedlemmer](#7-eksportere-grupper-og-gruppemedlemmer)
-    8. [Importér grupper og gruppemedlemmer i BlackBoard](#8-importr-grupper-og-gruppemedlemmer-i-blackboard)
-4. [Support](#support)
+    1. [Generer et Excel-ark med data](#2-generer-et-excel-ark-med-data)
+    1. [Åpne programmet](#3-pne-programmet)
+    1. [Importer dataene fra steg 2](#4-importer-dataene-fra-steg-2)
+    1. [Opprett grupper](#5-opprett-grupper)
+    1. [Flytte studenter](#6-flytte-studenter)
+    1. [Eksportere grupper og gruppemedlemmer](#7-eksportere-grupper-og-gruppemedlemmer)
+    1. [Importér grupper og gruppemedlemmer i BlackBoard](#8-importr-grupper-og-gruppemedlemmer-i-blackboard)
+1. [Support](#support)
+   
+## Oversiktbilde
+![Nummerert oversiktsbilde](Gruppesammensetning.png "Nummerert oversiktsbilde")
+#### Forklaring
+1. <ins>Filnavn til valgte fil</ins>
+1. <ins>_Velg fil_-knapp</ins>  
+    Trykk på denne for å velge en ny fil. Overskriver tidligere liste med studenter
+1. <ins>Maksimum antall medlemmer i hver gruppe</ins>  
+    Leses av programmet når knapp (5) - _Opprett grupper_ blir trykket på. Tallet bestemmer hvor mange studenter algoritmen lar det være i hver gruppe
+1. <ins>Antall studenter funnet i den valgte filen</ins>
+1. <ins>_Opprett grupper_-knapp</ins>  
+    Oppretter et forslag til gruppesammensetning basert på ønskede samarbeidspartnere, programmeringserfaring og ønsket arbeidstid  
+    Kun aktivert når en fil er valgt
+1. <ins>_Eksporter grupper_-knapp</ins>  
+    Åpner fildialog for å lagre liste over grupper i en .csv-fil  
+    Kun aktivert når grupper har blitt opprettet
+1. <ins>_Eksporter gruppemedlemmer_-knapp</ins>  
+    Åpner fildialog for å lagre liste over gruppermedlemmer og -tilhørighet i en .csv-fil  
+    Kun aktivert når grupper har blitt opprettet
+1. <ins>Statusmeldinger for lagring av endringer</ins>  
+    - __Siste endringer er ikke eksportert__  
+        Det har blitt gjort en endring siden forrige eksport av data
+    - __Grupper eksportert__  
+        De siste endringene i antall grupper har blitt eksportert.  
+        _NB: Det kan fortsatt være endringer i gruppemedlemskap som ikke er eksportert_
+    - __Gruppemedlemmer eksportert__    
+        De siste endringene i gruppemedlemskap har blitt eksportert.  
+        _NB: Det kan fortsatt være endringer i antall grupper som ikke er eksportert_
+    - __Eksport av grupper ble avbrutt__  
+        En feil har oppstått og de siste endringene i antall grupper ble ikke eksportert.  
+        Dette kan komme av at brukeren trykket på _Avbryt_, eller at fildialogen ble lukket uten å trykke på _Lagre_ 
+    - __Eksport av gruppemedlemmer ble avbrutt__  
+        En feil har oppstått og de siste endringene i gruppemedlemskap ble ikke eksportert.  
+        Dette kan komme av at brukeren trykket på _Avbryt_, eller at fildialogen ble lukket uten å trykke på _Lagre_
+1. <ins>Liste over studenter funnet i valgte fil</ins>  
+    Hver linje i listen kan velges for å få mer informasjon om studenten i informasjonsfelt (10) og (11)
+1. <ins>Informasjon om studenten</ins>  
+    Her listes informasjonen hentet fra regnearket opp
+1. <ins>Valgte students gruppemedlemskap</ins>  
+    Når en student velges i listen (9) viser dette feltet hvilken gruppe studenten tilhører.  
+    Ved å endre dette tallet, og deretter trykke på _Flytt_-knappen (12), kan du flytte en student til en annen gruppe
+1. <ins>_Flytt student_-knapp</ins>  
+    Knapp for å flytte en student til gruppen valgt i (11)  
+    Kun aktiv om nummeret i (11) er annerledes enn nummeret på studentens gruppe
+1. <ins>Liste over gruppemedlemskap</ins>  
+    Her listes gruppene opprettet av programmet opp, med full oversikt over all informasjonen til hver student, for lett å kunne få oversikt over hvilke egenskaper hver student i gruppen har.  
+    Hver rad kan klikkes på for å velge studenten i listen (9) og få informasjonen i informasjonsfeltene (10) og (11)
     
 ## Bruksanvisning
 #### 1. Last ned programmet
