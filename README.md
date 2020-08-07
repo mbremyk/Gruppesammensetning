@@ -1,7 +1,7 @@
 # Gruppesammensetning
   
 Dette er et program for sammensetning av grupper til faget INFT1003 Webteknologi og Teamarbeid ved NTNU.  
-Programmet tar et regneark med data om studentene, og et forslag til grupper, basert på at alle studentene skal få jobbe med sine ønskede samarbeidspartnere, at alle gruppene skal ha medlemmer med noe programmeringserfaring, og at så mange som mulig på gruppa kan jobbe på samme tid på dagen
+Programmet tar et regneark med data om studentene og lager et forslag til grupper, basert på at alle studentene skal få jobbe med sine ønskede samarbeidspartnere, at alle gruppene skal ha medlemmer med noe programmeringserfaring, og at så mange som mulig på gruppa kan jobbe på samme tid på dagen
 
 ## Innholdsfortegnelse
 - [Gruppesammensetning (topp)](#gruppesammensetning)
@@ -23,7 +23,7 @@ Programmet tar et regneark med data om studentene, og et forslag til grupper, ba
 
 ## Nedlasting
 - Windows: [Gruppesammensetning_win.exe](./dist/Gruppesammensetning_win.exe)
-- ~~Mac: Fungerer ikke.~~  [Gruppesammensetning_mac.app](./dist/Gruppesammensetning_mac.zip)  
+- Mac: Fungerer ikke  
     Midlertidig løsning (med python 3 innstallert): 
     - Klon prosjektet med `git clone`
     - Naviger til toppnivået i prosjektmappen med `cd <prosjektnavn>` (idi-project1 eller Gruppesammensetning)
