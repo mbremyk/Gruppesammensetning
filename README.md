@@ -113,7 +113,7 @@ Finn fram til der du lagret [programfilen fra punkt 1](#1-last-ned-programmet) o
 Klikk på knappen _Velg fil_  
 Naviger til der du lagret Excel-filen med studentenes svar  
 Klikk på filen, og deretter _Åpne_, eller dobbeltklikk på filen  
-En liste med alle studentenes navn og e-postadresse skal dukke opp på venstre side, og _Antall studenter_ skal reflektere hvor mange studenter det er i lista  
+En liste med alle studentenes navn og brukernavn skal dukke opp på venstre side, og _Antall studenter_ skal reflektere hvor mange studenter det er i lista  
 
 #### 5. Opprett grupper
 Klikk på knappen _Opprett grupper_  
@@ -124,15 +124,15 @@ Hvis du ikke er fornøyd med gruppene programmet har satt opp, kan du velge en s
 
 #### 7. Eksportere grupper og gruppemedlemmer
 Når du er fornøyd med gruppene, kan du eksportere grupper og gruppemedlemmer ved å trykke på knappene _Eksporter grupper..._ og _Eksporter gruppemedlemmer..._
-Siden BlackBoard importerer grupper og gruppemedlemmer separat, må det også eksporteres som to filer.
+Siden BlackBoard importerer grupper og gruppemedlemmer separat, må disse eksporteres som to separate filer.  
 Velg filplassering og navn på filene (standard er _Grupper.csv_ og _Gruppemedlemmer.csv_)
 
 #### 8. Importér grupper og gruppemedlemmer i BlackBoard
 For å importere grupper og gruppemedlemmer går du til fagrommet til faget ditt i BlackBoard.
 Under _Emnebehandling_ på venstre side velger du _Brukere og grupper_ og trykker på _Grupper_.  
 Trykk på _Importer_  
-Under _IMPORTER GRUPPEMEDLEMMER_ trykker du på _Bla gjennom min datamaskin_, navigerer til der du lagret de eksporterte filene, og velger filen som inneholder Gruppemedlemmene, standard navn er _Gruppemedlemmer.csv_  
-Under _IMPORTER GRUPPER_ gjør du det samme, men velger filen med gruppene istedenfor, standard navn er _Grupper.csv_  
+Under _IMPORTER GRUPPEMEDLEMMER_ trykker du på _Bla gjennom min datamaskin_, navigerer til der du lagret de eksporterte filene, og velger filen som inneholder Gruppemedlemmene. Standard navn er _Gruppemedlemmer.csv_  
+Under _IMPORTER GRUPPER_ gjør du det samme, men velger filen med gruppene istedenfor. Standard navn er _Grupper.csv_  
 Velg hvilke verktøy gruppene skal ha tilgang til, og trykk _Send_  
 BlackBoard er litt tregt, så om du ikke ser gruppene med én gang skal det bare være å vente noen minutter og så laste inn siden på nytt med F5 eller Ctrl/Cmd+R  
 Hvis du ikke har endret innstillingene dine for mailing i BlackBoard skal du også få en mail når gruppene er importert  
