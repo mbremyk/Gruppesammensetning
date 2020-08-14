@@ -22,9 +22,16 @@ Programmet tar et regneark med data om studentene og lager et forslag til gruppe
 - [Support](#support)
 
 ## Nedlasting
-- Windows: [Gruppesammensetning_win.exe](./dist/Gruppesammensetning_win.exe)
-- Mac: Fungerer ikke  
-    Midlertidig løsning (med python 3 innstallert): 
+- Windows:  
+    Versjon 1.0: [Gruppesammensetning_win_v1.0.exe](dist/Gruppesammensetning_win_v1.0.exe)  
+    Siste versjon:  
+    Med python 3 innstallert 
+    - Klon prosjektet med `git clone`
+    - Naviger til toppnivået i prosjektmappen med `cd <prosjektnavn>` (idi-project1 eller Gruppesammensetning)
+    - Kjør programmet med `python main.py`
+- Mac:  
+    Siste versjon:  
+    Midlertidig løsning (med python 3 innstallert) 
     - Klon prosjektet med `git clone`
     - Naviger til toppnivået i prosjektmappen med `cd <prosjektnavn>` (idi-project1 eller Gruppesammensetning)
     - Kjør programmet med `python main.py`
@@ -80,8 +87,8 @@ Programmet tar et regneark med data om studentene og lager et forslag til gruppe
 ## Bruksanvisning
 #### 1. Last ned programmet
 Last ned den relevante filen for ditt system, og lagre den på et fornuftig sted:
-* Windows: [Gruppesammensetning_win.exe](./dist/Gruppesammensetning_win.exe)
-* ~~Mac: Fungerer ikke.~~  [Gruppesammensetning_mac.app](./dist/Gruppesammensetning_mac.zip)  
+* Windows: [Gruppesammensetning_win.exe](dist/Gruppesammensetning_win_v1.0.exe)
+* Mac:
     Midlertidig løsning: innstaller python 3, klon prosjektet og kjør `python main.py` i kommandolinja
 
 #### 2. Generer et Excel-ark med data
@@ -112,7 +119,7 @@ Finn fram til der du lagret [programfilen fra punkt 1](#1-last-ned-programmet) o
 #### 4. Importer dataene fra steg 2
 Klikk på knappen _Velg fil_  
 Naviger til der du lagret Excel-filen med studentenes svar  
-Klikk på filen, og deretter _Åpne_, eller dobbeltklikk på filen  
+Klikk på filen og deretter _Åpne_, eller dobbeltklikk på filen  
 En liste med alle studentenes navn og brukernavn skal dukke opp på venstre side, og _Antall studenter_ skal reflektere hvor mange studenter det er i lista  
 
 #### 5. Opprett grupper
