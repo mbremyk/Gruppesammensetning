@@ -71,7 +71,11 @@ Programmet tar et regneark med data om studentene og lager et forslag til gruppe
         En feil har oppstått og de siste endringene i gruppemedlemskap ble ikke eksportert.  
         Dette kan komme av at brukeren trykket på _Avbryt_, eller at fildialogen ble lukket uten å trykke på _Lagre_
 1. <ins>Liste over studenter funnet i valgte fil</ins>  
-    Hver linje i listen kan velges for å få mer informasjon om studenten i informasjonsfelt (10) og (11)
+    Hver linje i listen kan velges for å få mer informasjon om studenten i informasjonsfelt (10) og (11).  
+    Linjen endrer farge etter følgende kriterier:
+    - Rød: studenten er ikke plassert i en gruppe
+    - Gul: studenten er i en gruppe, men ikke på gruppe med alle ønskede samarbeidspartnere. Dette kan enten bety at navnet til en eller flere ønsker er feilstavet, eller at den ønskede studenten ikke finnes
+    - Hvit: studenten er i en gruppe sammen med alle sine ønskede samarbeidspartnere
 1. <ins>Informasjon om studenten</ins>  
     Her listes informasjonen hentet fra regnearket om den valgte studenten opp
 1. <ins>Valgte students gruppemedlemskap</ins>  
