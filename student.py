@@ -7,7 +7,8 @@ class Student:
         self.name = name
         self.username = username
         self.strprog = prog
-        self.prog = 'JavaScript' in prog or 'språk' in prog
+        self.javascript = 'JavaScript' in prog
+        self.olang = 'språk' in prog
         self.worktime = worktime
         if strpartners:
             self.strpartners = re.split('[;,]', strpartners)
@@ -19,8 +20,8 @@ class Student:
         self.partners = []
 
     def __str__(self):
-        return 'Student{email: %s, name: %s, prog: %s, worktime: %s, hasgroup: %s, partners: %s}' % (
-            self.email, self.name, self.prog, self.worktime, self.hasgroup, self.partners)
+        return 'Student{email: %s, name: %s, JavaScript: %s, andre språk: %s, worktime: %s, hasgroup: %s, partners: %s}' % (
+            self.email, self.name, self.javascript, self.olang, self.worktime, self.hasgroup, self.partners)
 
     def removepartner(self, partner):
         self.partners.remove(partner)
@@ -35,7 +36,8 @@ class Student:
         self.name = student.name
         self.username = student.username
         self.strprog = student.strprog
-        self.prog = student.prog
+        self.javascript = student.javascript
+        self.olang = student.olang
         self.worktime = student.worktime
         self.strpartners = student.strpartners
         self.hasgroup = student.hasgroup

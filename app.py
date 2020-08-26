@@ -176,7 +176,7 @@ class App(Tk):
         #
         #           Information about selected student
         #
-        self.studentvariables = [StringVar(), StringVar(), StringVar(), StringVar(), StringVar()]
+        self.studentvariables = [StringVar(), StringVar(), StringVar(), StringVar(), StringVar(), StringVar()]
         for s in self.studentvariables:
             s.set('')
 
@@ -186,7 +186,8 @@ class App(Tk):
 
         self.studentgroup.trace('w', self.__handlespin)
 
-        labeltexts = ['Navn: ', 'Email: ', 'Brukernavn', 'Prog. erfaring: \n', 'Arbeidstid: ']
+        labeltexts = ['Navn: ', 'Email: ', 'Brukernavn', 'Prog. erfaring: \n', 'Arbeidstid: ',
+                      'Ønskede samarbeidspartnere: ']
         labels = []
         texts = []
         for ix, l in enumerate(labeltexts):
@@ -250,6 +251,7 @@ class App(Tk):
             for s in self.groupregister.students:
                 self.lststudents.insert(END, s.name + ' - ' + s.username)
             self.btncreategroups['state'] = 'normal'
+
         else:
             self.btncreategroups['state'] = 'disabled'
             self.lststudents.delete(0, END)
@@ -284,6 +286,7 @@ class App(Tk):
             self.studentgroup.set(self.groupregister.getgroupindexbystudentemail(self.curstudent.email))
         self.btnexportgroups['state'] = 'normal'
         self.btnexportgroupmembers['state'] = 'normal'
+        self.__updatelststudentscolours()
 
     def __exportgroups(self):
         """
@@ -366,7 +369,7 @@ class App(Tk):
 
     def __updatestudentinfolabels(self):
         """
-        Method for updating the labels with info on the currentlyg selected student
+        Method for updating the labels with info on the currently selected student
 
         :return: None
         """
@@ -375,7 +378,6 @@ class App(Tk):
         student = self.curstudent.gettuple()
         student = list(student)
         self.debugstr.set(str(self.curstudent.strpartners) + '\n\n' + str(self.curstudent.partners))
-        del (student[-1])
         student[progindex] = student[progindex].replace(';', '\n').strip('\n')
         for ix, s in enumerate(self.studentvariables):
             s.set(student[ix])
@@ -417,6 +419,7 @@ class App(Tk):
             tree.insert('', END, values=self.curstudent.gettuple())
             self.groupregister.movestudent(self.curstudent,
                                            self.groupregister.groups[int(self.spinstudentgroup.get()) - 1], True)
+            self.__updatelststudentscolours()
         pass
 
     def __toggledebug(self, event):
@@ -458,3 +461,29 @@ class App(Tk):
                     tree.selection_set(item)
                     tree.focus(item)
                     break
+
+    def __updatelststudentscolours(self):
+        """
+        Updates lststudents with background colours based on the group and partner status of the student
+
+        Red: the student is not in a group
+        Yellow: the student is in a group, but not matched with all of their desired partners.
+                this may be a result of a misspelled name, or that the desired partner does not exist
+        White: the student is in a group and matched with all of their desired partners
+
+        :return: None
+        """
+        for x in range(len(self.lststudents.get(0, END))):
+            student = self.groupregister.getstudentbyusername(self.lststudents.get(x).split()[-1])
+            bg = 'white'
+            if not student.hasgroup:
+                bg = 'red'
+            else:
+                group = self.groupregister.groups[self.groupregister.getgroupindexbystudentusername(student.username)]
+                for p in student.inputpartners:
+                    partner = self.groupregister.getstudentbyname(p)
+                    if not partner:
+                        partner = self.groupregister.getstudentbyusername(p)
+                    if partner not in group.members:
+                        bg = 'yellow'
+            self.lststudents.itemconfig(x, bg=bg)

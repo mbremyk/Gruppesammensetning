@@ -17,6 +17,7 @@ class GroupRegister:
     maxmembers : int
         used for setting maximum amount of members in Groups in this GroupRegister when they are created
     """
+
     def __init__(self, maxmembers: int):
         """
         :param maxmembers: int
@@ -204,16 +205,24 @@ class GroupRegister:
     def __fill(self, students: List[Student], checktime=True):
         for g in self.groups:
             if len(g) < self.maxmembers:
-                if not g.prog:
+                if not g.javascript:
                     for s in students:
-                        if s.prog and not s.hasgroup and (
+                        if s.javascript and not s.hasgroup and (
+                                g.time == s.worktime or s.worktime == 'Fleksibel' or g.time == ''):
+                            self.__addmembertogroup(s, g)
+                            break
+        for g in self.groups:
+            if len(g) < self.maxmembers:
+                if not g.olang:
+                    for s in students:
+                        if s.olang and not s.hasgroup and (
                                 g.time == s.worktime or s.worktime == 'Fleksibel' or g.time == ''):
                             self.__addmembertogroup(s, g)
                             break
         for g in self.groups:
             for s in students:
-                if len(g) < self.maxmembers and not s.hasgroup and (not checktime or
-                                                                    g.time == s.worktime or s.worktime == 'Fleksibel' or g.time == ''):
+                if len(g) < self.maxmembers and not s.hasgroup and (
+                        not checktime or g.time == s.worktime or s.worktime == 'Fleksibel' or g.time == ''):
                     self.__addmembertogroup(s, g)
 
     def movestudent(self, student: Student, togroup: Group, ignorelimit=False):

@@ -4,7 +4,8 @@ from student import Student
 class Group:
     def __init__(self, maxmembers: int):
         self.members = []
-        self.prog = False
+        self.javascript = False
+        self.olang = False
         self.time = ''
         self.maxmembers = maxmembers
 
@@ -31,8 +32,10 @@ class Group:
         for m in self.members:
             if m in member.partners:
                 member.partners.remove(m)
-        if member.prog:
-            self.prog = True
+        if member.javascript:
+            self.javascript = True
+        if member.olang:
+            self.olang = True
         if not self.time:
             if 'tid' in member.worktime:
                 self.time = member.worktime
@@ -44,7 +47,8 @@ class Group:
         s = 'Group{ members: {'
         for m in self.members:
             s += m.name + ', '
-        s += '}, hasprogrammer: %s, ' % self.prog
+        s += '}, hasjavascript: %s, ' % self.javascript
+        s += 'hasotherlanguage: %s' % self.olang
         s += 'worktime: %s' % self.time
         s += ' }'
         return s
@@ -57,14 +61,16 @@ class Group:
             self.members += other.members
             if not self.time and other.time:
                 self.time = other.time
-            for m in other.members:
-                if m.prog:
-                    self.prog = True
-                    break
+            if other.javascript:
+                self.javascript = True
+            if other.olang:
+                self.olang = True
         elif isinstance(other, Student):
             self.members += other
-            if other.prog:
-                self.prog = True
+            if other.javascript:
+                self.javascript = True
+            if other.olang:
+                self.olang = True
         else:
             raise TypeError('Cannot add non-Group or -Student object to object of type Group')
         return self
@@ -78,8 +84,10 @@ class Group:
         if member in self.members:
             self.members.remove(member)
             member.hasgroup = False
-            if not any(s.prog for s in self.members):
-                self.prog = False
+            if not any(s.javascript for s in self.members):
+                self.javascript = False
+            if not any(s.olang for s in self.members):
+                self.olang = False
             if not any('tid' in s.worktime for s in self.members):
                 self.time = ''
         else:
