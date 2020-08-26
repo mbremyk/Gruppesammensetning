@@ -23,7 +23,7 @@ Programmet tar et regneark med data om studentene og lager et forslag til gruppe
 
 ## Nedlasting
 - Windows:  
-    Versjon 1.0: [Gruppesammensetning_win_v1.0.exe](dist/Gruppesammensetning_win_v1.0.exe)  
+    Versjon 1.0: [Gruppesammensetning_win_v1.1.exe](dist/Gruppesammensetning_win_v1.1.exe)  
     Siste versjon:  
     Med python 3 innstallert 
     - Klon prosjektet med `git clone`
